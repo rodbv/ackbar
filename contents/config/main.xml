@@ -14,5 +14,11 @@
         <entry name="barOpacity" type="Double">
             <default>0.6</default>
         </entry>
+        <entry name="fontFamily" type="String">
+            <default></default>
+        </entry>
+        <entry name="fontColor" type="Color">
+            <default>transparent</default>
+        </entry>
     </group>
 </kcfg>

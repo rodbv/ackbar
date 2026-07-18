@@ -1,7 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
 import org.kde.plasma.plasmoid
-import org.kde.plasma.core as PlasmaCore
 import org.kde.plasma.components as PlasmaComponents3
 import org.kde.kirigami as Kirigami
 
@@ -10,21 +9,11 @@ PlasmoidItem {
 
     readonly property string taskText: plasmoid.configuration.taskText
     readonly property bool hasTask: taskText.length > 0
-    property bool editing: false
+    readonly property string fontFamily: plasmoid.configuration.fontFamily || Kirigami.Theme.defaultFont.family
 
-    // Panel windows only receive keyboard focus while the applet is in
-    // AcceptingInputStatus (enforced by plasmashell's PanelView).
-    Plasmoid.status: editing
-        ? PlasmaCore.Types.AcceptingInputStatus
-        : PlasmaCore.Types.ActiveStatus
+    preferredRepresentation: compactRepresentation
 
-    preferredRepresentation: fullRepresentation
-
-    Layout.minimumWidth: Kirigami.Units.gridUnit * 10
-    Layout.preferredWidth: Kirigami.Units.gridUnit * 22
-    Layout.fillWidth: true
-
-    fullRepresentation: Item {
+    compactRepresentation: Item {
         Layout.minimumWidth: Kirigami.Units.gridUnit * 10
         Layout.preferredWidth: Kirigami.Units.gridUnit * 22
         Layout.fillWidth: true
@@ -36,9 +25,7 @@ PlasmoidItem {
             anchors.bottomMargin: Kirigami.Units.smallSpacing
             radius: height / 2
             color: plasmoid.configuration.barColor
-            opacity: (root.hasTask || root.editing)
-                ? plasmoid.configuration.barOpacity
-                : 0.2
+            opacity: root.hasTask ? plasmoid.configuration.barOpacity : 0.2
 
             Behavior on opacity {
                 NumberAnimation { duration: Kirigami.Units.longDuration }
@@ -46,60 +33,73 @@ PlasmoidItem {
         }
 
         PlasmaComponents3.Label {
-            id: label
             anchors.fill: bar
             anchors.leftMargin: Kirigami.Units.largeSpacing
             anchors.rightMargin: Kirigami.Units.largeSpacing
-            visible: !root.editing
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
             elide: Text.ElideRight
             text: root.hasTask ? root.taskText : i18n("What are you doing now?")
             opacity: root.hasTask ? 1.0 : 0.6
             font.bold: root.hasTask
+            font.family: root.fontFamily
+            color: (plasmoid.configuration.fontColor && plasmoid.configuration.fontColor.toString() !== "#00000000")
+                ? plasmoid.configuration.fontColor
+                : Kirigami.Theme.textColor
         }
 
         MouseArea {
             anchors.fill: bar
-            visible: !root.editing
-            cursorShape: Qt.IBeamCursor
-            onDoubleClicked: {
-                editField.text = root.taskText;
-                root.editing = true;
-                focusGrabTimer.restart();
+            onDoubleClicked: root.expanded = !root.expanded
+        }
+    }
+
+    fullRepresentation: Item {
+        Layout.minimumWidth: Kirigami.Units.gridUnit * 18
+        Layout.minimumHeight: Kirigami.Units.gridUnit * 4
+        Layout.maximumHeight: Kirigami.Units.gridUnit * 4
+
+        Connections {
+            target: root
+            function onExpandedChanged() {
+                if (root.expanded) {
+                    editField.text = root.taskText;
+                    editField.forceActiveFocus();
+                    editField.selectAll();
+                }
             }
         }
 
-        // Panel needs a moment to become the active window after the status
-        // change before the field can take real keyboard focus.
-        Timer {
-            id: focusGrabTimer
-            interval: 100
-            onTriggered: {
-                editField.forceActiveFocus();
-                editField.selectAll();
-            }
-        }
+        RowLayout {
+            anchors.fill: parent
+            anchors.margins: Kirigami.Units.largeSpacing
+            spacing: Kirigami.Units.smallSpacing
 
-        PlasmaComponents3.TextField {
-            id: editField
-            anchors.fill: bar
-            anchors.leftMargin: Kirigami.Units.smallSpacing
-            anchors.rightMargin: Kirigami.Units.smallSpacing
-            visible: root.editing
-            horizontalAlignment: Text.AlignHCenter
-            placeholderText: i18n("What are you doing now?")
-
-            onAccepted: {
-                plasmoid.configuration.taskText = text.trim();
-                root.editing = false;
+            PlasmaComponents3.TextField {
+                id: editField
+                Layout.fillWidth: true
+                font.family: root.fontFamily
+                placeholderText: i18n("What are you doing now?")
+                onAccepted: {
+                    plasmoid.configuration.taskText = text.trim();
+                    root.expanded = false;
+                }
+                Keys.onEscapePressed: root.expanded = false
             }
-            Keys.onEscapePressed: root.editing = false
-            onActiveFocusChanged: {
-                // Only treat focus loss as cancel after focus was actually
-                // gained — panel activation is async on entering edit mode.
-                if (!activeFocus && root.editing && !focusGrabTimer.running) {
-                    root.editing = false;
+
+            PlasmaComponents3.Button {
+                icon.name: "checkmark"
+                text: i18n("Set")
+                onClicked: editField.accepted()
+            }
+
+            PlasmaComponents3.Button {
+                icon.name: "edit-clear"
+                display: PlasmaComponents3.AbstractButton.IconOnly
+                text: i18n("Clear task")
+                onClicked: {
+                    plasmoid.configuration.taskText = "";
+                    root.expanded = false;
                 }
             }
         }
