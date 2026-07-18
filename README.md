@@ -1,3 +1,5 @@
+<img src="logo.svg" width="96" alt="Whatcha logo">
+
 # Whatcha
 
 A minimal KDE Plasma 6 panel widget that shows the **one thing you are doing right now** — so you stay on task.
@@ -78,3 +80,7 @@ contents/
 ## License
 
 [MIT](LICENSE)
+
+The project logo (`logo.svg`) is the `check_constraint` icon from
+[KDE Breeze icons](https://invent.kde.org/frameworks/breeze-icons),
+licensed LGPL-3.0-or-later.
