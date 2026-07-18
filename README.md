@@ -36,15 +36,12 @@ Then right-click your panel → *Enter Edit Mode* → *Add Widgets…* → searc
 
 ```sh
 kpackagetool6 --type Plasma/Applet --install .   # or --upgrade on updates
-mkdir -p ~/.local/share/icons/hicolor/scalable/apps
-cp icon.svg ~/.local/share/icons/hicolor/scalable/apps/com.rodbv.whatcha.svg
 ```
 
 ### Uninstall
 
 ```sh
 kpackagetool6 --type Plasma/Applet --remove com.rodbv.whatcha
-rm -f ~/.local/share/icons/hicolor/scalable/apps/com.rodbv.whatcha.svg
 ```
 
 ## Usage

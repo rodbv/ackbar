@@ -9,9 +9,5 @@ else
     kpackagetool6 --type Plasma/Applet --install .
 fi
 
-ICON_DIR="$HOME/.local/share/icons/hicolor/scalable/apps"
-mkdir -p "$ICON_DIR"
-cp icon.svg "$ICON_DIR/com.rodbv.whatcha.svg"
-
 echo "Installed. Restart plasmashell to reload:"
 echo "  systemctl --user restart plasma-plasmashell"

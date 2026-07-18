@@ -6,7 +6,7 @@
             }
         ],
         "Description": "Shows the one thing you are doing right now",
-        "Icon": "com.rodbv.whatcha",
+        "Icon": "view-task",
         "Id": "com.rodbv.whatcha",
         "License": "MIT",
         "Name": "Whatcha",
