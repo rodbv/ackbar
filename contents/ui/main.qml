@@ -63,7 +63,7 @@ PlasmoidItem {
             anchors.fill: bar
             visible: !root.editing
             cursorShape: Qt.IBeamCursor
-            onClicked: {
+            onDoubleClicked: {
                 editField.text = root.taskText;
                 root.editing = true;
                 focusGrabTimer.restart();
