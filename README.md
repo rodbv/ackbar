@@ -1,10 +1,10 @@
-<img src="logo.svg" width="96" alt="Whatcha logo">
+<img src="logo.svg" width="96" alt="AckBar logo">
 
-# Whatcha
+# AckBar
 
 A minimal KDE Plasma 6 panel widget that shows the **one thing you are doing right now** — so you stay on task.
 
-![Whatcha bar in the panel with a running task and elapsed timer](screenshots/bar.png)
+![AckBar bar in the panel with a running task and elapsed timer](screenshots/bar.png)
 
 - Empty state: a nearly transparent bar asking *"What are you doing now?"*
 - Double-click the bar → a popup where you type your current task
@@ -26,13 +26,13 @@ A minimal KDE Plasma 6 panel widget that shows the **one thing you are doing rig
 ## Installation
 
 ```sh
-git clone https://github.com/rodbv/whatcha.git
-cd whatcha
+git clone https://github.com/rodbv/ackbar.git
+cd ackbar
 ./install.sh
 systemctl --user restart plasma-plasmashell
 ```
 
-Then right-click your panel → *Enter Edit Mode* → *Add Widgets…* → search for **Whatcha** and drag it onto the panel. Resize it in edit mode to taste.
+Then right-click your panel → *Enter Edit Mode* → *Add Widgets…* → search for **AckBar** and drag it onto the panel. Resize it in edit mode to taste.
 
 ### Manual install
 
@@ -43,7 +43,7 @@ kpackagetool6 --type Plasma/Applet --install .   # or --upgrade on updates
 ### Uninstall
 
 ```sh
-kpackagetool6 --type Plasma/Applet --remove com.rodbv.whatcha
+kpackagetool6 --type Plasma/Applet --remove com.rodbv.ackbar
 ```
 
 ## Usage
@@ -54,7 +54,7 @@ kpackagetool6 --type Plasma/Applet --remove com.rodbv.whatcha
 | Type + <kbd>Enter</kbd> (or *Set*) | Set the task, start the timer |
 | Clear button (✕) | Clear the task |
 | <kbd>Esc</kbd> | Close the popup without changes |
-| Right-click → *Configure Whatcha…* | Colors, fonts, timer settings |
+| Right-click → *Configure AckBar…* | Colors, fonts, timer settings |
 
 Setting the same text again keeps the timer running; changing the text resets it.
 

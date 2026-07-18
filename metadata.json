@@ -7,9 +7,9 @@
         ],
         "Description": "Shows the one thing you are doing right now",
         "Icon": "check_constraint",
-        "Id": "com.rodbv.whatcha",
+        "Id": "com.rodbv.ackbar",
         "License": "MIT",
-        "Name": "Whatcha",
+        "Name": "AckBar",
         "Version": "0.1.0"
     },
     "KPackageStructure": "Plasma/Applet",
