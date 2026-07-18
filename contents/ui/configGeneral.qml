@@ -9,6 +9,7 @@ KCM.SimpleKCM {
     property alias cfg_barColor: colorButton.color
     property alias cfg_barOpacity: opacitySlider.value
     property alias cfg_fontColor: fontColorButton.color
+    property alias cfg_showTimer: showTimerCheck.checked
     property string cfg_fontFamily
 
     Kirigami.FormLayout {
@@ -49,5 +50,10 @@ KCM.SimpleKCM {
                 onClicked: fontColorButton.color = "transparent"
             }
         }
-    }
+
+        QQC2.CheckBox {
+            id: showTimerCheck
+            Kirigami.FormData.label: i18n("Timer:")
+            text: i18n("Show time on task")
+        }    }
 }

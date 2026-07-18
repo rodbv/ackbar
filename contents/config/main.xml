@@ -20,5 +20,11 @@
         <entry name="fontColor" type="Color">
             <default>transparent</default>
         </entry>
+        <entry name="showTimer" type="Bool">
+            <default>true</default>
+        </entry>
+        <entry name="taskStartedAt" type="String">
+            <default></default>
+        </entry>
     </group>
 </kcfg>

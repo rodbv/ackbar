@@ -10,6 +10,34 @@ PlasmoidItem {
     readonly property string taskText: plasmoid.configuration.taskText
     readonly property bool hasTask: taskText.length > 0
     readonly property string fontFamily: plasmoid.configuration.fontFamily || Kirigami.Theme.defaultFont.family
+    readonly property bool showTimer: plasmoid.configuration.showTimer
+                                      && root.hasTask
+                                      && plasmoid.configuration.taskStartedAt !== ""
+    property string elapsedText: ""
+
+    function updateElapsed() {
+        const startedAt = Number(plasmoid.configuration.taskStartedAt);
+        if (!startedAt) {
+            elapsedText = "";
+            return;
+        }
+        const secs = Math.max(0, Math.floor((Date.now() - startedAt) / 1000));
+        const h = Math.floor(secs / 3600);
+        const m = Math.floor((secs % 3600) / 60);
+        const s = secs % 60;
+        const pad = n => String(n).padStart(2, "0");
+        elapsedText = h > 0
+            ? `${h}:${pad(m)}:${pad(s)}`
+            : `${pad(m)}:${pad(s)}`;
+    }
+
+    Timer {
+        running: root.showTimer
+        interval: 1000
+        repeat: true
+        triggeredOnStart: true
+        onTriggered: root.updateElapsed()
+    }
 
     preferredRepresentation: compactRepresentation
 
@@ -35,7 +63,9 @@ PlasmoidItem {
         PlasmaComponents3.Label {
             anchors.fill: bar
             anchors.leftMargin: Kirigami.Units.largeSpacing
-            anchors.rightMargin: Kirigami.Units.largeSpacing
+            anchors.rightMargin: root.showTimer
+                ? timerLabel.width + Kirigami.Units.largeSpacing * 2
+                : Kirigami.Units.largeSpacing
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
             elide: Text.ElideRight
@@ -43,6 +73,21 @@ PlasmoidItem {
             opacity: root.hasTask ? 1.0 : 0.6
             font.bold: root.hasTask
             font.family: root.fontFamily
+            color: (plasmoid.configuration.fontColor && plasmoid.configuration.fontColor.toString() !== "#00000000")
+                ? plasmoid.configuration.fontColor
+                : Kirigami.Theme.textColor
+        }
+
+        PlasmaComponents3.Label {
+            id: timerLabel
+            visible: root.showTimer
+            anchors.right: bar.right
+            anchors.rightMargin: Kirigami.Units.largeSpacing
+            anchors.verticalCenter: bar.verticalCenter
+            text: root.elapsedText
+            opacity: 0.75
+            font.family: "monospace"
+            font.pointSize: Kirigami.Theme.smallFont.pointSize
             color: (plasmoid.configuration.fontColor && plasmoid.configuration.fontColor.toString() !== "#00000000")
                 ? plasmoid.configuration.fontColor
                 : Kirigami.Theme.textColor
@@ -81,7 +126,12 @@ PlasmoidItem {
                 font.family: root.fontFamily
                 placeholderText: i18n("What are you doing now?")
                 onAccepted: {
-                    plasmoid.configuration.taskText = text.trim();
+                    const newText = text.trim();
+                    if (newText !== root.taskText) {
+                        plasmoid.configuration.taskStartedAt =
+                            newText === "" ? "" : String(Date.now());
+                    }
+                    plasmoid.configuration.taskText = newText;
                     root.expanded = false;
                 }
                 Keys.onEscapePressed: root.expanded = false
@@ -99,6 +149,7 @@ PlasmoidItem {
                 text: i18n("Clear task")
                 onClicked: {
                     plasmoid.configuration.taskText = "";
+                    plasmoid.configuration.taskStartedAt = "";
                     root.expanded = false;
                 }
             }
