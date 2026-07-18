@@ -6,7 +6,7 @@
             }
         ],
         "Description": "Shows the one thing you are doing right now",
-        "Icon": "check-constraint",
+        "Icon": "check_constraint",
         "Id": "com.rodbv.whatcha",
         "License": "MIT",
         "Name": "Whatcha",
