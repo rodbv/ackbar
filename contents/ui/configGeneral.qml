@@ -44,6 +44,13 @@ KCM.SimpleKCM {
             KQuickControls.ColorButton {
                 id: fontColorButton
                 showAlphaChannel: false
+                // Dialog hides the alpha channel, so a pick made while the
+                // stored value was transparent keeps alpha 0 — force opaque.
+                onColorChanged: {
+                    if (color.a === 0 && (color.r > 0 || color.g > 0 || color.b > 0)) {
+                        color = Qt.rgba(color.r, color.g, color.b, 1);
+                    }
+                }
             }
 
             QQC2.Button {

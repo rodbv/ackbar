@@ -10,6 +10,15 @@ PlasmoidItem {
     readonly property string taskText: plasmoid.configuration.taskText
     readonly property bool hasTask: taskText.length > 0
     readonly property string fontFamily: plasmoid.configuration.fontFamily || Kirigami.Theme.defaultFont.family
+    // Alpha 0 = "follow the theme". Force alpha to 1 on real picks: the
+    // config color button hides the alpha channel, so a color picked while
+    // the stored value was transparent keeps alpha 0.
+    readonly property color cfgFontColor: plasmoid.configuration.fontColor
+    readonly property bool useThemeColor: cfgFontColor.a === 0
+        && cfgFontColor.r === 0 && cfgFontColor.g === 0 && cfgFontColor.b === 0
+    readonly property color textColor: useThemeColor
+        ? Kirigami.Theme.textColor
+        : Qt.rgba(cfgFontColor.r, cfgFontColor.g, cfgFontColor.b, 1)
     readonly property bool showTimer: plasmoid.configuration.showTimer
                                       && root.hasTask
                                       && plasmoid.configuration.taskStartedAt !== ""
@@ -73,9 +82,7 @@ PlasmoidItem {
             opacity: root.hasTask ? 1.0 : 0.6
             font.bold: root.hasTask
             font.family: root.fontFamily
-            color: (plasmoid.configuration.fontColor && plasmoid.configuration.fontColor.toString() !== "#00000000")
-                ? plasmoid.configuration.fontColor
-                : Kirigami.Theme.textColor
+            color: root.textColor
         }
 
         PlasmaComponents3.Label {
@@ -88,9 +95,7 @@ PlasmoidItem {
             opacity: 0.75
             font.family: plasmoid.configuration.timerFontFamily || "monospace"
             font.pointSize: Kirigami.Theme.smallFont.pointSize
-            color: (plasmoid.configuration.fontColor && plasmoid.configuration.fontColor.toString() !== "#00000000")
-                ? plasmoid.configuration.fontColor
-                : Kirigami.Theme.textColor
+            color: root.textColor
         }
 
         MouseArea {
