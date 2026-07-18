@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import org.kde.plasma.plasmoid
+import org.kde.plasma.core as PlasmaCore
 import org.kde.plasma.components as PlasmaComponents3
 import org.kde.kirigami as Kirigami
 
@@ -10,6 +11,12 @@ PlasmoidItem {
     readonly property string taskText: plasmoid.configuration.taskText
     readonly property bool hasTask: taskText.length > 0
     property bool editing: false
+
+    // Panel windows only receive keyboard focus while the applet is in
+    // AcceptingInputStatus (enforced by plasmashell's PanelView).
+    Plasmoid.status: editing
+        ? PlasmaCore.Types.AcceptingInputStatus
+        : PlasmaCore.Types.ActiveStatus
 
     preferredRepresentation: fullRepresentation
 
@@ -57,8 +64,18 @@ PlasmoidItem {
             visible: !root.editing
             cursorShape: Qt.IBeamCursor
             onClicked: {
-                root.editing = true;
                 editField.text = root.taskText;
+                root.editing = true;
+                focusGrabTimer.restart();
+            }
+        }
+
+        // Panel needs a moment to become the active window after the status
+        // change before the field can take real keyboard focus.
+        Timer {
+            id: focusGrabTimer
+            interval: 100
+            onTriggered: {
                 editField.forceActiveFocus();
                 editField.selectAll();
             }
@@ -79,7 +96,9 @@ PlasmoidItem {
             }
             Keys.onEscapePressed: root.editing = false
             onActiveFocusChanged: {
-                if (!activeFocus && root.editing) {
+                // Only treat focus loss as cancel after focus was actually
+                // gained — panel activation is async on entering edit mode.
+                if (!activeFocus && root.editing && !focusGrabTimer.running) {
                     root.editing = false;
                 }
             }
