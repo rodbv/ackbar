@@ -6,17 +6,29 @@ import org.kde.kcmutils as KCM
 import org.kde.kquickcontrols as KQuickControls
 
 KCM.SimpleKCM {
+    // Keep in sync with the barColor default in config/main.xml
+    readonly property color defaultBarColor: "#2ecc71"
     property alias cfg_barColor: colorButton.color
     property alias cfg_barOpacity: opacitySlider.value
     property alias cfg_fontColor: fontColorButton.color
+    property alias cfg_biggerFont: biggerFontCheck.checked
     property alias cfg_showTimer: showTimerCheck.checked
     property string cfg_timerFontFamily
     property string cfg_fontFamily
 
     Kirigami.FormLayout {
-        KQuickControls.ColorButton {
-            id: colorButton
+        RowLayout {
             Kirigami.FormData.label: i18n("Bar color:")
+
+            KQuickControls.ColorButton {
+                id: colorButton
+            }
+
+            QQC2.Button {
+                text: i18n("Reset to default")
+                enabled: !Qt.colorEqual(colorButton.color, defaultBarColor)
+                onClicked: colorButton.color = defaultBarColor
+            }
         }
 
         QQC2.Slider {
@@ -60,9 +72,15 @@ KCM.SimpleKCM {
         }
 
         QQC2.CheckBox {
+            id: biggerFontCheck
+            Kirigami.FormData.label: i18n("Font size:")
+            text: i18n("Bigger font")
+        }
+
+        QQC2.CheckBox {
             id: showTimerCheck
             Kirigami.FormData.label: i18n("Timer:")
-            text: i18n("Show time on task")
+            text: i18n("Show timer on task")
         }
 
         QQC2.ComboBox {

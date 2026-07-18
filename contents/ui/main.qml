@@ -58,8 +58,8 @@ PlasmoidItem {
         Rectangle {
             id: bar
             anchors.fill: parent
-            anchors.topMargin: Kirigami.Units.smallSpacing
-            anchors.bottomMargin: Kirigami.Units.smallSpacing
+            anchors.topMargin: 2
+            anchors.bottomMargin: 2
             radius: height / 2
             color: plasmoid.configuration.barColor
             opacity: root.hasTask ? plasmoid.configuration.barOpacity : 0.2
@@ -82,6 +82,8 @@ PlasmoidItem {
             opacity: root.hasTask ? 1.0 : 0.6
             font.bold: root.hasTask
             font.family: root.fontFamily
+            font.pointSize: Kirigami.Theme.defaultFont.pointSize
+                * (plasmoid.configuration.biggerFont ? 1.2 : 1.0)
             color: root.textColor
         }
 
