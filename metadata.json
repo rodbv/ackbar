@@ -1,0 +1,20 @@
+{
+    "KPlugin": {
+        "Authors": [
+            {
+                "Name": "Rodrigo Vieira"
+            }
+        ],
+        "Description": "Shows the one thing you are doing right now",
+        "Icon": "task-ongoing",
+        "Id": "com.rodbv.whatcha",
+        "License": "MIT",
+        "Name": "Whatcha",
+        "Version": "0.1.0"
+    },
+    "KPackageStructure": "Plasma/Applet",
+    "X-Plasma-API-Minimum-Version": "6.0",
+    "X-Plasma-Provides": [
+        "org.kde.plasma.notes"
+    ]
+}
