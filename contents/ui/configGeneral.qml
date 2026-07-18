@@ -10,6 +10,7 @@ KCM.SimpleKCM {
     property alias cfg_barOpacity: opacitySlider.value
     property alias cfg_fontColor: fontColorButton.color
     property alias cfg_showTimer: showTimerCheck.checked
+    property string cfg_timerFontFamily
     property string cfg_fontFamily
 
     Kirigami.FormLayout {
@@ -55,5 +56,18 @@ KCM.SimpleKCM {
             id: showTimerCheck
             Kirigami.FormData.label: i18n("Timer:")
             text: i18n("Show time on task")
-        }    }
+        }
+
+        QQC2.ComboBox {
+            id: timerFontCombo
+            Kirigami.FormData.label: i18n("Timer font:")
+            enabled: showTimerCheck.checked
+            model: [i18n("Default monospace")].concat(Qt.fontFamilies())
+            onActivated: cfg_timerFontFamily = currentIndex === 0 ? "" : currentText
+            Component.onCompleted: {
+                const idx = Qt.fontFamilies().indexOf(cfg_timerFontFamily);
+                currentIndex = idx >= 0 ? idx + 1 : 0;
+            }
+        }
+    }
 }

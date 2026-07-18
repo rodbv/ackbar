@@ -20,6 +20,9 @@
         <entry name="fontColor" type="Color">
             <default>transparent</default>
         </entry>
+        <entry name="timerFontFamily" type="String">
+            <default></default>
+        </entry>
         <entry name="showTimer" type="Bool">
             <default>true</default>
         </entry>

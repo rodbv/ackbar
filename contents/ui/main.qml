@@ -86,7 +86,7 @@ PlasmoidItem {
             anchors.verticalCenter: bar.verticalCenter
             text: root.elapsedText
             opacity: 0.75
-            font.family: "monospace"
+            font.family: plasmoid.configuration.timerFontFamily || "monospace"
             font.pointSize: Kirigami.Theme.smallFont.pointSize
             color: (plasmoid.configuration.fontColor && plasmoid.configuration.fontColor.toString() !== "#00000000")
                 ? plasmoid.configuration.fontColor
