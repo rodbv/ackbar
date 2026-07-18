@@ -1,0 +1,59 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: ackbar 1.0\n"
+"Language: pt_BR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgid "What are you doing now?"
+msgstr "O que você está fazendo agora?"
+
+msgid "Set"
+msgstr "Definir"
+
+msgid "Clear task"
+msgstr "Limpar tarefa"
+
+msgid "General"
+msgstr "Geral"
+
+msgid "Bar color:"
+msgstr "Cor da barra:"
+
+msgid "Reset to default"
+msgstr "Restaurar padrão"
+
+msgid "Bar tint strength:"
+msgstr "Intensidade da cor da barra:"
+
+msgid "Font:"
+msgstr "Fonte:"
+
+msgid "Default font"
+msgstr "Fonte padrão"
+
+msgid "Font color:"
+msgstr "Cor da fonte:"
+
+msgid "Use theme color"
+msgstr "Usar cor do tema"
+
+msgid "Font size:"
+msgstr "Tamanho da fonte:"
+
+msgid "Bigger font"
+msgstr "Fonte maior"
+
+msgid "Timer:"
+msgstr "Cronômetro:"
+
+msgid "Show timer on task"
+msgstr "Mostrar cronômetro na tarefa"
+
+msgid "Timer font:"
+msgstr "Fonte do cronômetro:"
+
+msgid "Default monospace"
+msgstr "Monospace padrão"
