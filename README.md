@@ -2,6 +2,8 @@
 
 A minimal KDE Plasma 6 panel widget that shows the **one thing you are doing right now** — so you stay on task.
 
+![Whatcha bar in the panel with a running task and elapsed timer](screenshots/bar.png)
+
 - Empty state: a nearly transparent bar asking *"What are you doing now?"*
 - Double-click the bar → a popup where you type your current task
 - The bar tints green (color configurable) with your task centered
@@ -56,6 +58,10 @@ rm -f ~/.local/share/icons/hicolor/scalable/apps/com.rodbv.whatcha.svg
 | Right-click → *Configure Whatcha…* | Colors, fonts, timer settings |
 
 Setting the same text again keeps the timer running; changing the text resets it.
+
+![Task entry popup](screenshots/popup.png)
+
+![Settings dialog](screenshots/settings.png)
 
 ## Development
 
