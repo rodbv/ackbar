@@ -81,7 +81,9 @@ PlasmoidItem {
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
             elide: Text.ElideRight
-            text: root.hasTask ? root.taskText : i18n("What are you doing now?")
+            text: root.hasTask
+                ? root.taskText
+                : (plasmoid.configuration.placeholderText || i18n("What are you doing now?"))
             opacity: root.hasTask ? 1.0 : 0.6
             font.bold: root.hasTask
             font.family: root.fontFamily

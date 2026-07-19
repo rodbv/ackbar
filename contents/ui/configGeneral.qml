@@ -8,6 +8,7 @@ import org.kde.kquickcontrols as KQuickControls
 KCM.SimpleKCM {
     // Keep in sync with the barColor default in config/main.xml
     readonly property color defaultBarColor: "#2ecc71"
+    property alias cfg_placeholderText: placeholderField.text
     property alias cfg_barColor: colorButton.color
     property alias cfg_barOpacity: opacitySlider.value
     property alias cfg_fontColor: fontColorButton.color
@@ -16,6 +17,21 @@ KCM.SimpleKCM {
     property string cfg_fontFamily
 
     Kirigami.FormLayout {
+        RowLayout {
+            Kirigami.FormData.label: i18n("Default text:")
+
+            QQC2.TextField {
+                id: placeholderField
+                placeholderText: i18n("What are you doing now?")
+            }
+
+            QQC2.Button {
+                text: i18n("Reset to default")
+                enabled: placeholderField.text !== ""
+                onClicked: placeholderField.text = ""
+            }
+        }
+
         RowLayout {
             Kirigami.FormData.label: i18n("Bar color:")
 
