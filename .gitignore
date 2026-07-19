@@ -2,3 +2,4 @@
 .remember/
 *.plasmoid
 releases/
+.claude/
