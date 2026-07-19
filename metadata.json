@@ -3,9 +3,12 @@
     "KPlugin": {
         "Authors": [
             {
-                "Name": "Rodrigo Vieira"
+                "Name": "Rodrigo Vieira",
+                "Website": "https://github.com/rodbv"
             }
         ],
+        "BugReportUrl": "https://github.com/rodbv/ackbar/issues",
+        "Website": "https://github.com/rodbv/ackbar",
         "Description": "Shows the one thing you are doing right now",
         "Icon": "check_constraint",
         "Id": "com.rodbv.ackbar",
