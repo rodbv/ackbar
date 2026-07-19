@@ -1,11 +1,14 @@
 import QtQuick
 import QtQuick.Layouts
 import org.kde.plasma.plasmoid
+import org.kde.plasma.core as PlasmaCore
 import org.kde.plasma.components as PlasmaComponents3
 import org.kde.kirigami as Kirigami
 
 PlasmoidItem {
     id: root
+
+    Plasmoid.backgroundHints: PlasmaCore.Types.ShadowBackground | PlasmaCore.Types.ConfigurableBackground
 
     readonly property string taskText: plasmoid.configuration.taskText
     readonly property bool hasTask: taskText.length > 0
