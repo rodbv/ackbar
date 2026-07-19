@@ -1,3 +1,4 @@
 *.qmlc
 .remember/
 *.plasmoid
+releases/
