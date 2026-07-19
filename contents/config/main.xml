@@ -23,9 +23,6 @@
         <entry name="timerFontFamily" type="String">
             <default></default>
         </entry>
-        <entry name="biggerFont" type="Bool">
-            <default>false</default>
-        </entry>
         <entry name="showTimer" type="Bool">
             <default>true</default>
         </entry>

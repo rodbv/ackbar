@@ -85,8 +85,7 @@ PlasmoidItem {
             opacity: root.hasTask ? 1.0 : 0.6
             font.bold: root.hasTask
             font.family: root.fontFamily
-            font.pointSize: Kirigami.Theme.defaultFont.pointSize
-                * (plasmoid.configuration.biggerFont ? 1.2 : 1.0)
+            font.pixelSize: Math.max(8, bar.height * 0.45)
             color: root.textColor
         }
 
@@ -99,7 +98,7 @@ PlasmoidItem {
             text: root.elapsedText
             opacity: 0.75
             font.family: plasmoid.configuration.timerFontFamily || "monospace"
-            font.pointSize: Kirigami.Theme.smallFont.pointSize
+            font.pixelSize: Math.max(7, bar.height * 0.3)
             color: root.textColor
         }
 

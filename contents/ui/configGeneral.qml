@@ -11,7 +11,6 @@ KCM.SimpleKCM {
     property alias cfg_barColor: colorButton.color
     property alias cfg_barOpacity: opacitySlider.value
     property alias cfg_fontColor: fontColorButton.color
-    property alias cfg_biggerFont: biggerFontCheck.checked
     property alias cfg_showTimer: showTimerCheck.checked
     property string cfg_timerFontFamily
     property string cfg_fontFamily
@@ -69,12 +68,6 @@ KCM.SimpleKCM {
                 text: i18n("Use theme color")
                 onClicked: fontColorButton.color = "transparent"
             }
-        }
-
-        QQC2.CheckBox {
-            id: biggerFontCheck
-            Kirigami.FormData.label: i18n("Font size:")
-            text: i18n("Bigger font")
         }
 
         QQC2.CheckBox {
