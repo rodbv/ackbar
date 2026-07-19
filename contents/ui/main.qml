@@ -62,7 +62,7 @@ PlasmoidItem {
             anchors.bottomMargin: 2
             radius: height / 2
             color: plasmoid.configuration.barColor
-            opacity: root.hasTask ? plasmoid.configuration.barOpacity : 0.2
+            opacity: root.hasTask ? plasmoid.configuration.barOpacity : 0.05
 
             Behavior on opacity {
                 NumberAnimation { duration: Kirigami.Units.longDuration }
