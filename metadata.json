@@ -1,4 +1,5 @@
 {
+    "KPackageStructure": "Plasma/Applet",
     "KPlugin": {
         "Authors": [
             {
@@ -10,9 +11,8 @@
         "Id": "com.rodbv.ackbar",
         "License": "MIT",
         "Name": "AckBar",
-        "Version": "1.0.0"
+        "Version": "1.1.0"
     },
-    "KPackageStructure": "Plasma/Applet",
     "X-Plasma-API-Minimum-Version": "6.0",
     "X-Plasma-Provides": [
         "org.kde.plasma.notes"
