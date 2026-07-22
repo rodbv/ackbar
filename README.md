@@ -4,6 +4,8 @@
 
 A minimal KDE Plasma 6 panel widget that shows the **one thing you are doing right now** — so you stay on task.
 
+**[Get it on the KDE Store](https://store.kde.org/p/2366085)**
+
 ![AckBar bar in the panel with a running task and elapsed timer](screenshots/bar.png)
 
 - Empty state: a nearly transparent bar asking *"What are you doing now?"*
