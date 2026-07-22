@@ -77,6 +77,29 @@ contents/
 └── config/main.xml        # config schema
 ```
 
+### Packaging for the KDE Store
+
+Build a distributable `.plasmoid` for upload to [store.kde.org](https://store.kde.org):
+
+```sh
+./package.sh   # writes releases/com.rodbv.ackbar-<version>.plasmoid
+```
+
+`package.sh` produces a **zip** archive with `metadata.json` and `contents/` at the
+root — the only format KDE's package installer and the *Get New Widgets* dialog
+accept. A `.tar.gz` renamed to `.plasmoid` fails on install with *"Could not open
+package file."* The script aborts if the result isn't a zip or the manifest isn't at
+the root.
+
+Release checklist:
+
+1. Bump `"Version"` in `metadata.json`.
+2. `./package.sh`, then smoke-test the artifact:
+   ```sh
+   kpackagetool6 --type Plasma/Applet --install releases/com.rodbv.ackbar-<version>.plasmoid
+   ```
+3. Upload the `.plasmoid` to the store and set the matching version.
+
 ## License
 
 [MIT](LICENSE)
