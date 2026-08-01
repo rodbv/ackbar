@@ -82,7 +82,7 @@ KCM.SimpleKCM {
             }
         }
 
-        Item { Kirigami.FormData.isSection: true }
+        Item { Kirigami.FormData.isSection: true; implicitHeight: Kirigami.Units.largeSpacing }
 
         RowLayout {
             Kirigami.FormData.label: i18n("Bar color:")
@@ -106,7 +106,7 @@ KCM.SimpleKCM {
             stepSize: 0.05
         }
 
-        Item { Kirigami.FormData.isSection: true }
+        Item { Kirigami.FormData.isSection: true; implicitHeight: Kirigami.Units.largeSpacing }
 
         QQC2.CheckBox {
             id: showTimerCheck
@@ -125,7 +125,7 @@ KCM.SimpleKCM {
             }
         }
 
-        Item { Kirigami.FormData.isSection: true }
+        Item { Kirigami.FormData.isSection: true; implicitHeight: Kirigami.Units.largeSpacing }
 
         QQC2.SpinBox {
             id: blinkIntervalSpin
