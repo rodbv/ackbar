@@ -36,12 +36,12 @@ New entries in `contents/config/main.xml` (group General):
 | `pomodoroMinutes` | Int | `20` | Work duration |
 | `restMinutes` | Int | `5` | Rest duration |
 | `pomodoroPhase` | String | `""` | Runtime state: `work`, `workEnded`, `rest`, `restEnded`, or empty (idle) |
-| `phaseStartedAt` | String | `""` | Epoch ms when current phase began |
+| `phaseEndsAt` | String | `""` | Epoch ms when current phase nominally ends |
 | `pomodoroCount` | Int | `0` | Current session number for this task |
 
 Runtime state lives in configuration so it survives plasmashell restarts,
 matching the existing `taskStartedAt` pattern. On restore, remaining time
-is computed from `phaseStartedAt`; a phase whose time already elapsed while
+is computed from `phaseEndsAt`; a phase whose time already elapsed while
 plasmashell was down restores into its `*Ended` state (no notification
 replay).
 
@@ -122,7 +122,7 @@ Left side of the bar, using the existing timer font
 ## Error handling / edge cases
 
 - Plasmashell restart mid-phase: remaining time recomputed from
-  `phaseStartedAt`; already-elapsed phases restore as `*Ended` (overtime
+  `phaseEndsAt`; already-elapsed phases restore as `*Ended` (overtime
   counting from the phase's nominal end), without re-firing notifications.
 - Notification dismissed without clicking a button: state stays in
   `*Ended`, overtime keeps counting; the bar's overtime display is the
