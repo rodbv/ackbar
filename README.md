@@ -6,7 +6,7 @@ A minimal KDE Plasma 6 panel widget that shows the **one thing you are doing rig
 
 **[Get it on the KDE Store](https://store.kde.org/p/2366085)**
 
-![Task with elapsed timer](screenshots/bar.png)
+![Task with elapsed timer](screenshots/001-bar.png)
 
 ## Features
 
@@ -14,10 +14,10 @@ A minimal KDE Plasma 6 panel widget that shows the **one thing you are doing rig
 - **Elapsed timer** — `MM:SS` (or `H:MM:SS` past an hour) at the right edge, monospace so it doesn't jiggle; resets when the task changes.
 - **Quiet when idle** — with no task set, the bar is a nearly transparent nudge:
 
-  ![Empty state](screenshots/bar-empty.png)
+  ![Empty state](screenshots/002-bar-empty.png)
 - **Blink reminder** — optionally flash the bar in a color of your choice every N minutes, pulling your attention back to the task; off by default, only blinks while a task is set:
 
-  ![Blink reminder](screenshots/blink.gif)
+  ![Blink reminder](screenshots/003-blink.gif)
 - **Pomodoro mode** — opt-in, see below.
 - **Configurable** — bar color, tint strength, fonts, font color, timer on/off, blink interval and color, pomodoro durations and rest color.
 
@@ -28,22 +28,22 @@ setting a task starts a pomodoro: the bar shows a countdown and session
 counter (`🍅x3 12:34`) on the left, next to the usual elapsed timer on the
 right.
 
-![Context menu](screenshots/context-menu.png)
+![Context menu](screenshots/004-context-menu.png)
 
 **Nothing advances without your say-so.** When a pomodoro ends, the bar
 flashes and a notification asks what's next — keep working or take a break:
 
-![Pomodoro finished notification](screenshots/notification.png)
+![Pomodoro finished notification](screenshots/005-notification.png)
 
 During rest the bar turns gray (color configurable) and counts the break
 down:
 
-![Pomodoro rest](screenshots/bar-rest.png)
+![Pomodoro rest](screenshots/006-bar-rest.png)
 
 When the rest is over, another notification lets you snooze it a minute,
 start the next pomodoro, or switch to a new task:
 
-![Rest over notification](screenshots/notification-rest.png)
+![Rest over notification](screenshots/007-notification-rest.png)
 
 Run over the clock and the bar shows the overtime (`🍅x3 25+2:34`).
 Changing the task resets the counter and starts fresh; *Rest now* and
@@ -90,16 +90,16 @@ kpackagetool6 --type Plasma/Applet --remove com.rodbv.ackbar
 
 Setting the same text again keeps the timer running; changing the text resets it.
 
-![Task entry popup](screenshots/popup.png)
+![Task entry popup](screenshots/008-popup.png)
 
 ## Settings
 
 Settings are split into General, Blink reminder, and Pomodoro pages, with a
 *Reset all settings* button on the General page.
 
-![General settings](screenshots/settings.png)
+![General settings](screenshots/009-settings.png)
 
-![Pomodoro settings](screenshots/settings-pomodoro.png)
+![Pomodoro settings](screenshots/010-settings-pomodoro.png)
 
 ## Development
 
