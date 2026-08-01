@@ -8,6 +8,10 @@ A minimal KDE Plasma 6 panel widget that shows the **one thing you are doing rig
 
 ![AckBar bar in the panel with a running task and elapsed timer](screenshots/bar.png)
 
+![Gray bar during a pomodoro rest](screenshots/bar-rest.png)
+
+![Empty bar asking what are you doing now](screenshots/bar-empty.png)
+
 - Empty state: a nearly transparent bar asking *"What are you doing now?"*
 - Double-click the bar → a popup where you type your current task
 - The bar tints green (color configurable) with your task centered
