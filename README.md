@@ -66,6 +66,8 @@ Setting the same text again keeps the timer running; changing the text resets it
 
 ![Task entry popup](screenshots/popup.png)
 
+![Context menu with pomodoro actions](screenshots/context-menu.png)
+
 ![Settings dialog](screenshots/settings.png)
 
 ## Development
