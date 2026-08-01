@@ -6,11 +6,11 @@ A minimal KDE Plasma 6 panel widget that shows the **one thing you are doing rig
 
 **[Get it on the KDE Store](https://store.kde.org/p/2366085)**
 
-![AckBar bar in the panel with a running task and elapsed timer](screenshots/bar.png)
+![Task with elapsed timer](screenshots/bar.png)
 
-![Gray bar during a pomodoro rest](screenshots/bar-rest.png)
+![Pomodoro rest](screenshots/bar-rest.png)
 
-![Empty bar asking what are you doing now](screenshots/bar-empty.png)
+![Empty state](screenshots/bar-empty.png)
 
 - Empty state: a nearly transparent bar asking *"What are you doing now?"*
 - Double-click the bar → a popup where you type your current task
@@ -25,7 +25,7 @@ A minimal KDE Plasma 6 panel widget that shows the **one thing you are doing rig
 - **Translucent tint** — your wallpaper shows through; tint strength configurable
 - **Blink reminder** — optionally flash the bar in a color of your choice every N minutes, pulling your attention back to the task; off by default, only blinks while a task is set
 
-  ![Bar flashing lime green](screenshots/blink.gif)
+  ![Blink reminder](screenshots/blink.gif)
 - **Pomodoro mode (opt-in)** — countdown and session counter on the bar (`🍅x3 12:34`), all-manual transitions via notification buttons (keep working / take break / snooze / new task), bar turns gray during rest, everything resets when the task changes. Toggle it from the widget's right-click menu.
 - **Configurable** — bar color, tint strength, font face, font color, timer font, timer on/off, blink interval and color
 
@@ -72,15 +72,15 @@ Setting the same text again keeps the timer running; changing the text resets it
 
 ![Task entry popup](screenshots/popup.png)
 
-![Context menu with pomodoro actions](screenshots/context-menu.png)
+![Context menu](screenshots/context-menu.png)
 
 ![Pomodoro finished notification](screenshots/notification.png)
 
 ![Rest over notification](screenshots/notification-rest.png)
 
-![Settings dialog](screenshots/settings.png)
+![General settings](screenshots/settings.png)
 
-![Pomodoro settings page](screenshots/settings-pomodoro.png)
+![Pomodoro settings](screenshots/settings-pomodoro.png)
 
 ## Development
 
