@@ -62,10 +62,10 @@ msgid "Default text:"
 msgstr "Texto padrão:"
 
 msgid "Blink reminder:"
-msgstr "Piscar:"
+msgstr "Lembrete visual:"
 
 msgid "Blink color:"
-msgstr "Cor do piscar:"
+msgstr "Cor do lembrete:"
 
 msgid "Off"
 msgstr "Desligado"
