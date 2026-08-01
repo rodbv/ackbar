@@ -57,3 +57,20 @@ msgstr "Fonte do cronômetro:"
 
 msgid "Default monospace"
 msgstr "Monospace padrão"
+
+msgid "Default text:"
+msgstr "Texto padrão:"
+
+msgid "Blink reminder:"
+msgstr "Piscar:"
+
+msgid "Blink color:"
+msgstr "Cor do piscar:"
+
+msgid "Off"
+msgstr "Desligado"
+
+msgid "every %1 minute"
+msgid_plural "every %1 minutes"
+msgstr[0] "a cada %1 minuto"
+msgstr[1] "a cada %1 minutos"
