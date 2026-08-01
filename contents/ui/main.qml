@@ -13,12 +13,10 @@ PlasmoidItem {
     readonly property string taskText: plasmoid.configuration.taskText
     readonly property bool hasTask: taskText.length > 0
     readonly property string fontFamily: plasmoid.configuration.fontFamily || Kirigami.Theme.defaultFont.family
-    // Alpha 0 = "follow the theme". Force alpha to 1 on real picks: the
-    // config color button hides the alpha channel, so a color picked while
-    // the stored value was transparent keeps alpha 0.
+    // Alpha 0 = "follow the theme"; the config UI stores fully transparent
+    // when theme mode is on and always writes alpha 1 for custom colors.
     readonly property color cfgFontColor: plasmoid.configuration.fontColor
     readonly property bool useThemeColor: cfgFontColor.a === 0
-        && cfgFontColor.r === 0 && cfgFontColor.g === 0 && cfgFontColor.b === 0
     readonly property color textColor: useThemeColor
         ? Kirigami.Theme.textColor
         : Qt.rgba(cfgFontColor.r, cfgFontColor.g, cfgFontColor.b, 1)
