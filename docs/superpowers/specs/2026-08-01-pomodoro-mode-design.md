@@ -128,8 +128,9 @@ Left side of the bar, using the existing timer font
   `*Ended`, overtime keeps counting; the bar's overtime display is the
   persistent cue. No re-notify, except the explicit [Not yet] snooze,
   which re-fires notification B once per press.
-- Duration changed mid-phase: applies from the next phase; the running
-  countdown keeps its original target (computed at phase start).
+- Duration changed mid-phase: the matching running phase restarts its
+  countdown with the new duration (work duration → running work phase,
+  rest duration → running rest phase); the session count is untouched.
 
 ## Testing
 

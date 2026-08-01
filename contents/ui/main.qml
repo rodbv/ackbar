@@ -35,6 +35,112 @@ PlasmoidItem {
                                       && plasmoid.configuration.taskStartedAt !== ""
     property string elapsedText: ""
 
+    readonly property bool pomodoroEnabled: plasmoid.configuration.pomodoroEnabled
+    readonly property string pomodoroPhase: plasmoid.configuration.pomodoroPhase
+    readonly property int pomodoroCount: plasmoid.configuration.pomodoroCount
+    readonly property bool pomodoroActive: pomodoroEnabled && hasTask && pomodoroPhase !== ""
+    property string pomodoroText: ""
+    signal pomodoroPhaseExpired(string endedPhase)
+
+    function startWork(count) {
+        plasmoid.configuration.pomodoroCount = count;
+        plasmoid.configuration.pomodoroPhase = "work";
+        plasmoid.configuration.phaseEndsAt =
+            String(Date.now() + plasmoid.configuration.pomodoroMinutes * 60000);
+    }
+
+    // TEST: remove override, restore plasmoid.configuration.restMinutes * 60000
+    readonly property int restDurationMs: 15 * 1000
+
+    function startRest(ms) {
+        plasmoid.configuration.pomodoroPhase = "rest";
+        plasmoid.configuration.phaseEndsAt = String(Date.now() + ms);
+    }
+
+    function clearPomodoro() {
+        plasmoid.configuration.pomodoroPhase = "";
+        plasmoid.configuration.phaseEndsAt = "";
+        plasmoid.configuration.pomodoroCount = 0;
+    }
+
+    function formatMMSS(secs) {
+        const m = Math.floor(secs / 60);
+        const s = secs % 60;
+        return `${m}:${String(s).padStart(2, "0")}`;
+    }
+
+    function updatePomodoro() {
+        if (!pomodoroActive) {
+            pomodoroText = "";
+            return;
+        }
+        const endsAt = Number(plasmoid.configuration.phaseEndsAt);
+        const now = Date.now();
+        const phase = pomodoroPhase;
+
+        // Live expiry: flip to the ended state and announce it.
+        if (phase === "work" && now >= endsAt) {
+            plasmoid.configuration.pomodoroPhase = "workEnded";
+            pomodoroPhaseExpired("work");
+        } else if (phase === "rest" && now >= endsAt) {
+            plasmoid.configuration.pomodoroPhase = "restEnded";
+            pomodoroPhaseExpired("rest");
+        }
+
+        const current = plasmoid.configuration.pomodoroPhase;
+        const overtime = current === "workEnded" || current === "restEnded";
+        const secs = Math.max(0, Math.floor(Math.abs(endsAt - now) / 1000));
+        const isWork = current.startsWith("work");
+        const nominalMin = isWork ? cfgPomodoroMinutes : cfgRestMinutes;
+        const time = overtime
+            ? `${nominalMin}+${formatMMSS(secs)}`
+            : formatMMSS(secs);
+        pomodoroText = isWork
+            ? `🍅${pomodoroCount} ${time}`
+            : `☕ ${time}`;
+    }
+
+    onTaskTextChanged: {
+        if (!pomodoroEnabled) return;
+        if (hasTask) startWork(1);
+        else clearPomodoro();
+    }
+
+    // Duration changes restart the countdown of the matching running phase
+    // with the new value (session count untouched).
+    readonly property int cfgPomodoroMinutes: plasmoid.configuration.pomodoroMinutes
+    readonly property int cfgRestMinutes: plasmoid.configuration.restMinutes
+
+    onCfgPomodoroMinutesChanged: {
+        if (pomodoroPhase === "work")
+            plasmoid.configuration.phaseEndsAt =
+                String(Date.now() + cfgPomodoroMinutes * 60000);
+    }
+
+    onCfgRestMinutesChanged: {
+        if (pomodoroPhase === "rest")
+            plasmoid.configuration.phaseEndsAt =
+                String(Date.now() + cfgRestMinutes * 60000);
+    }
+
+    onPomodoroEnabledChanged: {
+        if (pomodoroEnabled && hasTask) startWork(1);
+        else if (!pomodoroEnabled) clearPomodoro();
+    }
+
+    Component.onCompleted: {
+        // Normalize stale state from before a plasmashell restart without
+        // firing notifications: an expired running phase becomes its Ended
+        // twin; the tick then shows overtime from the nominal end.
+        const endsAt = Number(plasmoid.configuration.phaseEndsAt);
+        if (endsAt && Date.now() >= endsAt) {
+            if (pomodoroPhase === "work")
+                plasmoid.configuration.pomodoroPhase = "workEnded";
+            else if (pomodoroPhase === "rest")
+                plasmoid.configuration.pomodoroPhase = "restEnded";
+        }
+    }
+
     function updateElapsed() {
         const startedAt = Number(plasmoid.configuration.taskStartedAt);
         if (!startedAt) {
@@ -52,11 +158,14 @@ PlasmoidItem {
     }
 
     Timer {
-        running: root.showTimer
+        running: root.showTimer || root.pomodoroActive
         interval: 1000
         repeat: true
         triggeredOnStart: true
-        onTriggered: root.updateElapsed()
+        onTriggered: {
+            root.updateElapsed();
+            root.updatePomodoro();
+        }
     }
 
     readonly property color flashColor: plasmoid.configuration.blinkColor
@@ -127,7 +236,9 @@ PlasmoidItem {
 
         PlasmaComponents3.Label {
             anchors.fill: bar
-            anchors.leftMargin: Kirigami.Units.largeSpacing
+            anchors.leftMargin: root.pomodoroActive
+                ? pomodoroLabel.width + Kirigami.Units.largeSpacing * 2
+                : Kirigami.Units.largeSpacing
             anchors.rightMargin: root.showTimer
                 ? timerLabel.width + Kirigami.Units.largeSpacing * 2
                 : Kirigami.Units.largeSpacing
@@ -141,6 +252,19 @@ PlasmoidItem {
             font.bold: root.hasTask
             font.family: root.fontFamily
             font.pixelSize: Math.max(8, bar.height * 0.54)
+            color: root.textColor
+        }
+
+        PlasmaComponents3.Label {
+            id: pomodoroLabel
+            visible: root.pomodoroActive
+            anchors.left: bar.left
+            anchors.leftMargin: Kirigami.Units.largeSpacing
+            anchors.verticalCenter: bar.verticalCenter
+            text: root.pomodoroText
+            opacity: 0.9
+            font.family: plasmoid.configuration.timerFontFamily || "monospace"
+            font.pixelSize: Math.max(7, bar.height * 0.3)
             color: root.textColor
         }
 
