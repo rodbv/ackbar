@@ -177,7 +177,9 @@ PlasmoidItem {
 
     onTaskTextChanged: {
         if (!pomodoroInitialized || !pomodoroEnabled) return;
-        if (hasTask) startWork(1);
+        // Read taskText directly: derived bindings like hasTask may not
+        // have refreshed yet when this handler runs (stale-read race).
+        if (taskText.length > 0) startWork(1);
         else clearPomodoro();
     }
 
