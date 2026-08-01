@@ -58,10 +58,14 @@ New "Pomodoro" page via `ConfigCategory` in `contents/config/config.qml`
 
 ### Context menu
 
-`Plasmoid.contextualActions` gains one checkable `PlasmaCore.Action`
-"Pomodoro mode", bound to `pomodoroEnabled`. Appears in the widget's
-right-click menu near "Configure AckBar…". Menu and settings checkbox are
-two views of the same config key.
+`Plasmoid.contextualActions` gains three `PlasmaCore.Action` entries in the
+widget's right-click menu near "Configure AckBar…":
+
+- **Pomodoro mode** — checkable, bound to `pomodoroEnabled`; menu and
+  settings checkbox are two views of the same config key.
+- **Rest now** — visible only during work phases; jumps straight to rest.
+- **Restart pomodoro** — visible whenever a pomodoro is active; restarts
+  the current session's work countdown (count unchanged).
 
 ## State machine
 
@@ -83,12 +87,11 @@ any ──mode disabled──▶ (idle, state cleared)
   **Keep working** and **Take break**.
 - Notification B: "Rest over — start the next pomodoro?" with actions
   **Not yet** (extends rest by 1 minute, then notifies again),
-  **Yes, same task**, and an inline-reply action **New task…**
-  (`NotificationReplyAction`) whose submitted text replaces the task —
-  triggering the normal task-change reset (count back to 1, timer reset).
-- If the inline reply proves crowded or janky in practice, fallback:
-  "New task…" becomes a plain action that opens the bar's edit popup
-  (`root.expanded = true`).
+  **Yes, same task**, and **New task…**.
+- **New task…** opens the bar's edit popup (`root.expanded = true`).
+  The originally designed inline reply is impossible: KF6 exports
+  `NotificationReplyAction` to QML with `isCreatable: false`, so the
+  spec's planned fallback is the shipped behavior.
 - Enabling the mode while a task is already set starts `work` with
   count = 1 immediately.
 
@@ -99,12 +102,14 @@ Left side of the bar, using the existing timer font
 
 | State | Shows | Direction |
 |---|---|---|
-| `work` | `🍅3 12:34` | counts down |
-| `workEnded` | `🍅3 +2:34` | counts up (overtime since phase end) |
+| `work` | `🍅x3 12:34` | counts down |
+| `workEnded` | `🍅x3 25+2:34` | counts up (nominal minutes + overtime) |
 | `rest` | `☕ 4:12` | counts down |
-| `restEnded` | `☕ +1:05` | counts up |
+| `restEnded` | `☕ 5+1:05` | counts up (nominal minutes + overtime) |
 
-- `🍅` + count = current session number; `☕` marks rest.
+- `🍅x` + count = current session number; `☕` marks rest.
+- During rest phases the bar itself turns concrete gray (`#95a5a6`),
+  fading back to the configured color on work.
 - One shared 1s `Timer` drives both this and the existing elapsed label.
 - The task label's right/left margins account for the new label so text
   never overlaps.
@@ -117,7 +122,11 @@ Left side of the bar, using the existing timer font
   action's `activated` handler performs the state transition.
 - Phase end also triggers the existing flash overlay (blink color) via the
   `flashRequested` signal so the panel itself catches the eye.
-- The periodic blink reminder feature stays fully independent.
+- The periodic blink reminder stays independent, with one buffer: its tick
+  is skipped when a running work/rest countdown is less than 20 s from
+  expiry, so the reminder blink and the phase-end flash never stack.
+- A `testMode` flag in `main.qml` (default `false`) compresses durations
+  to 20 s work / 15 s rest / 10 s snooze for manual testing.
 
 ## Error handling / edge cases
 
