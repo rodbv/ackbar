@@ -67,6 +67,9 @@ msgstr "Lembrete visual:"
 msgid "Blink color:"
 msgstr "Cor do lembrete:"
 
+msgid "The bar blinks in the selected color at the selected interval, while a task is set."
+msgstr "A barra pisca na cor e frequência selecionadas, enquanto houver uma tarefa definida."
+
 msgid "Off"
 msgstr "Desligado"
 

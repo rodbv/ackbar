@@ -126,6 +126,14 @@ KCM.SimpleKCM {
             }
         }
 
+        QQC2.Label {
+            text: i18n("The bar blinks in the selected color at the selected interval, while a task is set.")
+            font: Kirigami.Theme.smallFont
+            opacity: 0.7
+            wrapMode: Text.WordWrap
+            Layout.fillWidth: true
+        }
+
         QQC2.ComboBox {
             id: timerFontCombo
             Kirigami.FormData.label: i18n("Timer font:")
