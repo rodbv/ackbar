@@ -19,7 +19,8 @@ A minimal KDE Plasma 6 panel widget that shows the **one thing you are doing rig
 - **One task, always visible** — lives in your panel, no window to lose
 - **Elapsed timer** — `MM:SS` (or `H:MM:SS` past an hour), monospace so it doesn't jiggle; resets when the task changes
 - **Translucent tint** — your wallpaper shows through; tint strength configurable
-- **Configurable** — bar color, tint strength, font face, font color, timer font, timer on/off
+- **Blink reminder** — optionally flash the bar in a color of your choice every N minutes, pulling your attention back to the task; off by default, only blinks while a task is set
+- **Configurable** — bar color, tint strength, font face, font color, timer font, timer on/off, blink interval and color
 
 ## Requirements
 
@@ -56,7 +57,7 @@ kpackagetool6 --type Plasma/Applet --remove com.rodbv.ackbar
 | Type + <kbd>Enter</kbd> (or *Set*) | Set the task, start the timer |
 | Clear button (✕) | Clear the task |
 | <kbd>Esc</kbd> | Close the popup without changes |
-| Right-click → *Configure AckBar…* | Colors, fonts, timer settings |
+| Right-click → *Configure AckBar…* | Colors, fonts, timer, blink reminder |
 
 Setting the same text again keeps the timer running; changing the text resets it.
 
@@ -76,7 +77,15 @@ Widget code is plain QML — no build step:
 contents/
 ├── ui/main.qml            # bar (compact) + popup editor (full representation)
 ├── ui/configGeneral.qml   # settings page
-└── config/main.xml        # config schema
+├── config/main.xml        # config schema
+└── locale/                # compiled translations (.mo)
+po/                        # translation sources (.po)
+```
+
+After editing a `.po`, recompile before installing:
+
+```sh
+msgfmt --check -o contents/locale/pt_BR/LC_MESSAGES/plasma_applet_com.rodbv.ackbar.mo po/pt_BR.po
 ```
 
 ### Packaging for the KDE Store
