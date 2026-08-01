@@ -132,7 +132,7 @@ PlasmoidItem {
             opacity: root.hasTask ? 1.0 : 0.6
             font.bold: root.hasTask
             font.family: root.fontFamily
-            font.pixelSize: Math.max(8, bar.height * 0.45)
+            font.pixelSize: Math.max(8, bar.height * 0.54)
             color: root.textColor
         }
 
