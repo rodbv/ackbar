@@ -6,18 +6,46 @@ import org.kde.kcmutils as KCM
 import org.kde.kquickcontrols as KQuickControls
 
 KCM.SimpleKCM {
-    // Keep in sync with the barColor/blinkColor defaults in config/main.xml
+    // Keep in sync with the barColor default in config/main.xml
     readonly property color defaultBarColor: "#2ecc71"
-    readonly property color defaultBlinkColor: "#32CD32"
     property alias cfg_placeholderText: placeholderField.text
     property alias cfg_barColor: colorButton.color
     property alias cfg_barOpacity: opacitySlider.value
     property color cfg_fontColor
     property alias cfg_showTimer: showTimerCheck.checked
-    property alias cfg_blinkIntervalMinutes: blinkIntervalSpin.value
-    property alias cfg_blinkColor: blinkColorButton.color
     property string cfg_timerFontFamily
     property string cfg_fontFamily
+
+    // No controls here — declared so "Reset all settings" can restore the
+    // Blink reminder and Pomodoro pages' keys too. Defaults must match
+    // config/main.xml.
+    property bool cfg_blinkEnabled
+    property int cfg_blinkIntervalMinutes
+    property color cfg_blinkColor
+    property bool cfg_pomodoroEnabled
+    property int cfg_pomodoroMinutes
+    property int cfg_restMinutes
+    property color cfg_restColor
+
+    function resetAllSettings() {
+        placeholderField.text = "";
+        colorButton.color = defaultBarColor;
+        opacitySlider.value = 0.6;
+        fontCombo.currentIndex = 0;
+        cfg_fontFamily = "";
+        themeFontColorCheck.checked = true;
+        syncFontColor();
+        showTimerCheck.checked = true;
+        timerFontCombo.currentIndex = 0;
+        cfg_timerFontFamily = "";
+        cfg_blinkEnabled = false;
+        cfg_blinkIntervalMinutes = 3;
+        cfg_blinkColor = "#32CD32";
+        cfg_pomodoroEnabled = false;
+        cfg_pomodoroMinutes = 20;
+        cfg_restMinutes = 5;
+        cfg_restColor = "#95a5a6";
+    }
 
     function syncFontColor() {
         cfg_fontColor = themeFontColorCheck.checked
@@ -127,40 +155,10 @@ KCM.SimpleKCM {
 
         Item { Kirigami.FormData.isSection: true; implicitHeight: Kirigami.Units.largeSpacing }
 
-        QQC2.SpinBox {
-            id: blinkIntervalSpin
-            Kirigami.FormData.label: i18n("Blink reminder:")
-            from: 0
-            to: 120
-            stepSize: 1
-            textFromValue: (value, locale) => value === 0
-                ? i18n("Off")
-                : i18np("every %1 minute", "every %1 minutes", value)
-            valueFromText: (text, locale) => parseInt(text) || 0
-        }
-
-        RowLayout {
-            Kirigami.FormData.label: i18n("Blink color:")
-
-            KQuickControls.ColorButton {
-                id: blinkColorButton
-                enabled: blinkIntervalSpin.value > 0
-            }
-
-            QQC2.Button {
-                text: i18n("Reset to default")
-                enabled: blinkIntervalSpin.value > 0
-                    && !Qt.colorEqual(blinkColorButton.color, defaultBlinkColor)
-                onClicked: blinkColorButton.color = defaultBlinkColor
-            }
-        }
-
-        QQC2.Label {
-            text: i18n("The bar blinks in the selected color at the selected interval, while a task is set.")
-            font: Kirigami.Theme.smallFont
-            opacity: 0.7
-            wrapMode: Text.WordWrap
-            Layout.fillWidth: true
+        QQC2.Button {
+            text: i18n("Reset all settings")
+            icon.name: "edit-undo"
+            onClicked: resetAllSettings()
         }
     }
 }

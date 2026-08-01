@@ -61,17 +61,82 @@ msgstr "Monospace padrão"
 msgid "Default text:"
 msgstr "Texto padrão:"
 
-msgid "Blink reminder:"
-msgstr "Lembrete visual:"
+msgid "Blink reminder"
+msgstr "Lembrete visual"
 
-msgid "Blink color:"
-msgstr "Cor do lembrete:"
+msgid "Enable blink reminder"
+msgstr "Ativar lembrete visual"
+
+msgid "Interval:"
+msgstr "Intervalo:"
+
+msgid "Color:"
+msgstr "Cor:"
+
+msgid "Rest bar color:"
+msgstr "Cor da barra no descanso:"
+
+msgid "Reset all settings"
+msgstr "Restaurar todas as configurações"
 
 msgid "The bar blinks in the selected color at the selected interval, while a task is set."
 msgstr "A barra pisca na cor e frequência selecionadas, enquanto houver uma tarefa definida."
 
-msgid "Off"
-msgstr "Desligado"
+msgid "Pomodoro"
+msgstr "Pomodoro"
+
+msgid "Enable Pomodoro mode"
+msgstr "Ativar modo Pomodoro"
+
+msgid "Pomodoro duration:"
+msgstr "Duração do pomodoro:"
+
+msgid "Rest duration:"
+msgstr "Duração do descanso:"
+
+msgid "%1 minute"
+msgid_plural "%1 minutes"
+msgstr[0] "%1 minuto"
+msgstr[1] "%1 minutos"
+
+msgid "Setting a task starts a pomodoro. You will be notified when it ends; nothing advances without your say-so."
+msgstr "Definir uma tarefa inicia um pomodoro. Você será notificado quando ele terminar; nada avança sem a sua confirmação."
+
+msgid "Pomodoro mode"
+msgstr "Modo Pomodoro"
+
+msgid "Rest now"
+msgstr "Descansar agora"
+
+msgid "Restart pomodoro"
+msgstr "Reiniciar pomodoro"
+
+msgid "Pomodoro finished"
+msgstr "Pomodoro concluído"
+
+msgid "Pomodoro #%1 finished. Time for a break?"
+msgstr "Pomodoro nº %1 concluído. Hora de uma pausa?"
+
+msgid "Keep working"
+msgstr "Continuar trabalhando"
+
+msgid "Take break"
+msgstr "Fazer pausa"
+
+msgid "Rest over"
+msgstr "Descanso encerrado"
+
+msgid "Start the next pomodoro?"
+msgstr "Iniciar o próximo pomodoro?"
+
+msgid "Not yet"
+msgstr "Ainda não"
+
+msgid "Yes, same task"
+msgstr "Sim, mesma tarefa"
+
+msgid "New task…"
+msgstr "Nova tarefa…"
 
 msgid "every %1 minute"
 msgid_plural "every %1 minutes"

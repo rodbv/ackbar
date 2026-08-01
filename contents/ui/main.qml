@@ -4,11 +4,34 @@ import org.kde.plasma.plasmoid
 import org.kde.plasma.core as PlasmaCore
 import org.kde.plasma.components as PlasmaComponents3
 import org.kde.kirigami as Kirigami
+import org.kde.notification
 
 PlasmoidItem {
     id: root
 
     Plasmoid.backgroundHints: PlasmaCore.Types.ShadowBackground | PlasmaCore.Types.ConfigurableBackground
+
+    Plasmoid.contextualActions: [
+        PlasmaCore.Action {
+            text: i18n("Pomodoro mode")
+            icon.name: "chronometer"
+            checkable: true
+            checked: plasmoid.configuration.pomodoroEnabled
+            onTriggered: plasmoid.configuration.pomodoroEnabled = checked
+        },
+        PlasmaCore.Action {
+            text: i18n("Rest now")
+            icon.name: "media-playback-pause"
+            visible: root.pomodoroActive && root.pomodoroPhase.startsWith("work")
+            onTriggered: root.startRest(root.restDurationMs)
+        },
+        PlasmaCore.Action {
+            text: i18n("Restart pomodoro")
+            icon.name: "view-refresh"
+            visible: root.pomodoroActive
+            onTriggered: root.startWork(Math.max(1, root.pomodoroCount))
+        }
+    ]
 
     readonly property string taskText: plasmoid.configuration.taskText
     readonly property bool hasTask: taskText.length > 0
@@ -24,6 +47,180 @@ PlasmoidItem {
                                       && root.hasTask
                                       && plasmoid.configuration.taskStartedAt !== ""
     property string elapsedText: ""
+
+    readonly property bool pomodoroEnabled: plasmoid.configuration.pomodoroEnabled
+    readonly property string pomodoroPhase: plasmoid.configuration.pomodoroPhase
+    readonly property int pomodoroCount: plasmoid.configuration.pomodoroCount
+    readonly property bool pomodoroActive: pomodoroEnabled && hasTask && pomodoroPhase !== ""
+    property string pomodoroText: ""
+    signal pomodoroPhaseExpired(string endedPhase)
+
+    function startWork(count) {
+        plasmoid.configuration.pomodoroCount = count;
+        plasmoid.configuration.pomodoroPhase = "work";
+        plasmoid.configuration.phaseEndsAt = String(Date.now() + workDurationMs);
+    }
+
+    // Compressed durations for manual testing: 20s work / 15s rest / 10s snooze.
+    readonly property bool testMode: false
+    readonly property int workDurationMs: testMode
+        ? 20 * 1000 : plasmoid.configuration.pomodoroMinutes * 60000
+    readonly property int restDurationMs: testMode
+        ? 15 * 1000 : plasmoid.configuration.restMinutes * 60000
+    readonly property int snoozeDurationMs: testMode
+        ? 10 * 1000 : 60000
+
+    function startRest(ms) {
+        plasmoid.configuration.pomodoroPhase = "rest";
+        plasmoid.configuration.phaseEndsAt = String(Date.now() + ms);
+    }
+
+    function clearPomodoro() {
+        plasmoid.configuration.pomodoroPhase = "";
+        plasmoid.configuration.phaseEndsAt = "";
+        plasmoid.configuration.pomodoroCount = 0;
+    }
+
+    function formatMMSS(secs) {
+        const m = Math.floor(secs / 60);
+        const s = secs % 60;
+        return `${m}:${String(s).padStart(2, "0")}`;
+    }
+
+    function updatePomodoro() {
+        if (!pomodoroActive) {
+            pomodoroText = "";
+            return;
+        }
+        const endsAt = Number(plasmoid.configuration.phaseEndsAt);
+        const now = Date.now();
+        const phase = pomodoroPhase;
+
+        // Live expiry: flip to the ended state and announce it.
+        if (phase === "work" && now >= endsAt) {
+            plasmoid.configuration.pomodoroPhase = "workEnded";
+            pomodoroPhaseExpired("work");
+        } else if (phase === "rest" && now >= endsAt) {
+            plasmoid.configuration.pomodoroPhase = "restEnded";
+            pomodoroPhaseExpired("rest");
+        }
+
+        const current = plasmoid.configuration.pomodoroPhase;
+        const overtime = current === "workEnded" || current === "restEnded";
+        const secs = Math.max(0, Math.floor(Math.abs(endsAt - now) / 1000));
+        const isWork = current.startsWith("work");
+        const nominalMin = isWork ? cfgPomodoroMinutes : cfgRestMinutes;
+        const time = overtime
+            ? `${nominalMin}+${formatMMSS(secs)}`
+            : formatMMSS(secs);
+        pomodoroText = isWork
+            ? `🍅x${pomodoroCount} ${time}`
+            : `☕ ${time}`;
+    }
+
+    Notification {
+        id: workEndNotification
+        componentName: "plasma_workspace"
+        eventId: "notification"
+        title: i18n("Pomodoro finished")
+        text: i18n("Pomodoro #%1 finished. Time for a break?", root.pomodoroCount)
+        iconName: "chronometer"
+        flags: Notification.Persistent
+        actions: [
+            NotificationAction {
+                label: i18n("Keep working")
+                onActivated: root.startWork(root.pomodoroCount + 1)
+            },
+            NotificationAction {
+                label: i18n("Take break")
+                onActivated: root.startRest(root.restDurationMs)
+            }
+        ]
+    }
+
+    Notification {
+        id: restEndNotification
+        componentName: "plasma_workspace"
+        eventId: "notification"
+        title: i18n("Rest over")
+        text: i18n("Start the next pomodoro?")
+        iconName: "chronometer"
+        flags: Notification.Persistent
+        actions: [
+            NotificationAction {
+                label: i18n("Not yet")
+                onActivated: root.startRest(root.snoozeDurationMs)
+            },
+            NotificationAction {
+                label: i18n("Yes, same task")
+                onActivated: root.startWork(root.pomodoroCount + 1)
+            },
+            // NotificationReplyAction is not creatable from QML in this KF6
+            // build (isCreatable: false), so "new task" opens the editor.
+            NotificationAction {
+                label: i18n("New task…")
+                onActivated: root.expanded = true
+            }
+        ]
+    }
+
+    onPomodoroPhaseExpired: endedPhase => {
+        flashRequested();
+        if (endedPhase === "work") workEndNotification.sendEvent();
+        else restEndNotification.sendEvent();
+    }
+
+    // QML fires *Changed handlers while initial bindings evaluate, in
+    // declaration order — without this gate a plasmashell restart could
+    // reset or wipe a persisted pomodoro.
+    property bool pomodoroInitialized: false
+
+    onTaskTextChanged: {
+        if (!pomodoroInitialized || !pomodoroEnabled) return;
+        if (hasTask) startWork(1);
+        else clearPomodoro();
+    }
+
+    // Duration changes restart the countdown of the matching running phase
+    // with the new value (session count untouched).
+    readonly property int cfgPomodoroMinutes: plasmoid.configuration.pomodoroMinutes
+    readonly property int cfgRestMinutes: plasmoid.configuration.restMinutes
+
+    onCfgPomodoroMinutesChanged: {
+        if (pomodoroInitialized && pomodoroPhase === "work")
+            plasmoid.configuration.phaseEndsAt = String(Date.now() + workDurationMs);
+    }
+
+    onCfgRestMinutesChanged: {
+        if (pomodoroInitialized && pomodoroPhase === "rest")
+            plasmoid.configuration.phaseEndsAt = String(Date.now() + restDurationMs);
+    }
+
+    onPomodoroEnabledChanged: {
+        if (!pomodoroInitialized) return;
+        if (pomodoroEnabled && hasTask) startWork(1);
+        else if (!pomodoroEnabled) clearPomodoro();
+    }
+
+    Component.onCompleted: {
+        // Normalize stale state from before a plasmashell restart without
+        // firing notifications: an expired running phase becomes its Ended
+        // twin; the tick then shows overtime from the nominal end.
+        const endsAt = Number(plasmoid.configuration.phaseEndsAt);
+        if (endsAt && Date.now() >= endsAt) {
+            if (pomodoroPhase === "work")
+                plasmoid.configuration.pomodoroPhase = "workEnded";
+            else if (pomodoroPhase === "rest")
+                plasmoid.configuration.pomodoroPhase = "restEnded";
+        }
+        // Self-heal the invariant "mode on + task set ⇔ pomodoro running",
+        // whatever state a previous session left behind.
+        if (pomodoroEnabled && hasTask && pomodoroPhase === "")
+            startWork(1);
+        else if ((!pomodoroEnabled || !hasTask) && pomodoroPhase !== "")
+            clearPomodoro();
+        pomodoroInitialized = true;
+    }
 
     function updateElapsed() {
         const startedAt = Number(plasmoid.configuration.taskStartedAt);
@@ -42,22 +239,36 @@ PlasmoidItem {
     }
 
     Timer {
-        running: root.showTimer
+        running: root.showTimer || root.pomodoroActive
         interval: 1000
         repeat: true
         triggeredOnStart: true
-        onTriggered: root.updateElapsed()
+        onTriggered: {
+            root.updateElapsed();
+            root.updatePomodoro();
+        }
     }
 
     readonly property color flashColor: plasmoid.configuration.blinkColor
-    readonly property int flashIntervalMs: plasmoid.configuration.blinkIntervalMinutes * 60 * 1000
+    readonly property int flashIntervalMs: plasmoid.configuration.blinkEnabled
+        ? plasmoid.configuration.blinkIntervalMinutes * 60 * 1000
+        : 0
     signal flashRequested()
 
     Timer {
         running: root.hasTask && root.flashIntervalMs > 0
         interval: Math.max(1000, root.flashIntervalMs)
         repeat: true
-        onTriggered: root.flashRequested()
+        onTriggered: {
+            // Hold the reminder blink when a pomodoro phase flip (with its
+            // own flash) is less than 20s away — avoids back-to-back flashes.
+            if (root.pomodoroActive
+                && (root.pomodoroPhase === "work" || root.pomodoroPhase === "rest")) {
+                const msLeft = Number(plasmoid.configuration.phaseEndsAt) - Date.now();
+                if (msLeft < 20000) return;
+            }
+            root.flashRequested();
+        }
     }
 
     preferredRepresentation: compactRepresentation
@@ -73,11 +284,17 @@ PlasmoidItem {
             anchors.topMargin: 2
             anchors.bottomMargin: 2
             radius: height / 2
-            color: plasmoid.configuration.barColor
+            color: root.pomodoroActive && root.pomodoroPhase.startsWith("rest")
+                ? plasmoid.configuration.restColor
+                : plasmoid.configuration.barColor
             opacity: root.hasTask ? plasmoid.configuration.barOpacity : 0.05
 
             Behavior on opacity {
                 NumberAnimation { duration: Kirigami.Units.longDuration }
+            }
+
+            Behavior on color {
+                ColorAnimation { duration: Kirigami.Units.longDuration }
             }
         }
 
@@ -117,7 +334,9 @@ PlasmoidItem {
 
         PlasmaComponents3.Label {
             anchors.fill: bar
-            anchors.leftMargin: Kirigami.Units.largeSpacing
+            anchors.leftMargin: root.pomodoroActive
+                ? pomodoroLabel.width + Kirigami.Units.largeSpacing * 2
+                : Kirigami.Units.largeSpacing
             anchors.rightMargin: root.showTimer
                 ? timerLabel.width + Kirigami.Units.largeSpacing * 2
                 : Kirigami.Units.largeSpacing
@@ -135,6 +354,19 @@ PlasmoidItem {
         }
 
         PlasmaComponents3.Label {
+            id: pomodoroLabel
+            visible: root.pomodoroActive
+            anchors.left: bar.left
+            anchors.leftMargin: Kirigami.Units.largeSpacing
+            anchors.verticalCenter: bar.verticalCenter
+            text: root.pomodoroText
+            opacity: 0.9
+            font.family: plasmoid.configuration.timerFontFamily || "monospace"
+            font.pixelSize: Math.max(7, bar.height * 0.36)
+            color: root.textColor
+        }
+
+        PlasmaComponents3.Label {
             id: timerLabel
             visible: root.showTimer
             anchors.right: bar.right
@@ -143,7 +375,7 @@ PlasmoidItem {
             text: root.elapsedText
             opacity: 0.75
             font.family: plasmoid.configuration.timerFontFamily || "monospace"
-            font.pixelSize: Math.max(7, bar.height * 0.3)
+            font.pixelSize: Math.max(7, bar.height * 0.36)
             color: root.textColor
         }
 

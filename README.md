@@ -20,6 +20,7 @@ A minimal KDE Plasma 6 panel widget that shows the **one thing you are doing rig
 - **Elapsed timer** — `MM:SS` (or `H:MM:SS` past an hour), monospace so it doesn't jiggle; resets when the task changes
 - **Translucent tint** — your wallpaper shows through; tint strength configurable
 - **Blink reminder** — optionally flash the bar in a color of your choice every N minutes, pulling your attention back to the task; off by default, only blinks while a task is set
+- **Pomodoro mode (opt-in)** — countdown and session counter on the bar (`🍅x3 12:34`), all-manual transitions via notification buttons (keep working / take break / snooze / new task), bar turns gray during rest, everything resets when the task changes. Toggle it from the widget's right-click menu.
 - **Configurable** — bar color, tint strength, font face, font color, timer font, timer on/off, blink interval and color
 
 ## Requirements
@@ -57,7 +58,9 @@ kpackagetool6 --type Plasma/Applet --remove com.rodbv.ackbar
 | Type + <kbd>Enter</kbd> (or *Set*) | Set the task, start the timer |
 | Clear button (✕) | Clear the task |
 | <kbd>Esc</kbd> | Close the popup without changes |
-| Right-click → *Configure AckBar…* | Colors, fonts, timer, blink reminder |
+| Right-click → *Configure AckBar…* | Colors, fonts, timer, blink reminder, pomodoro durations |
+| Right-click → *Pomodoro mode* | Toggle pomodoro mode on/off |
+| Right-click → *Rest now* / *Restart pomodoro* | Skip ahead / redo the current session (shown while a pomodoro runs) |
 
 Setting the same text again keeps the timer running; changing the text resets it.
 
