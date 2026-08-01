@@ -8,26 +8,46 @@ A minimal KDE Plasma 6 panel widget that shows the **one thing you are doing rig
 
 ![Task with elapsed timer](screenshots/bar.png)
 
-![Pomodoro rest](screenshots/bar-rest.png)
-
-![Empty state](screenshots/bar-empty.png)
-
-- Empty state: a nearly transparent bar asking *"What are you doing now?"*
-- Double-click the bar → a popup where you type your current task
-- The bar tints green (color configurable) with your task centered
-- An elapsed timer sits at the right edge, so you know how long you've been at it
-- Everything survives reboots and plasmashell restarts
-
 ## Features
 
-- **One task, always visible** — lives in your panel, no window to lose
-- **Elapsed timer** — `MM:SS` (or `H:MM:SS` past an hour), monospace so it doesn't jiggle; resets when the task changes
-- **Translucent tint** — your wallpaper shows through; tint strength configurable
-- **Blink reminder** — optionally flash the bar in a color of your choice every N minutes, pulling your attention back to the task; off by default, only blinks while a task is set
+- **One task, always visible** — lives in your panel, no window to lose. Double-click the bar, type, done. Everything survives reboots and plasmashell restarts.
+- **Elapsed timer** — `MM:SS` (or `H:MM:SS` past an hour) at the right edge, monospace so it doesn't jiggle; resets when the task changes.
+- **Quiet when idle** — with no task set, the bar is a nearly transparent nudge:
+
+  ![Empty state](screenshots/bar-empty.png)
+- **Blink reminder** — optionally flash the bar in a color of your choice every N minutes, pulling your attention back to the task; off by default, only blinks while a task is set:
 
   ![Blink reminder](screenshots/blink.gif)
-- **Pomodoro mode (opt-in)** — countdown and session counter on the bar (`🍅x3 12:34`), all-manual transitions via notification buttons (keep working / take break / snooze / new task), bar turns gray during rest, everything resets when the task changes. Toggle it from the widget's right-click menu.
-- **Configurable** — bar color, tint strength, font face, font color, timer font, timer on/off, blink interval and color
+- **Pomodoro mode** — opt-in, see below.
+- **Configurable** — bar color, tint strength, fonts, font color, timer on/off, blink interval and color, pomodoro durations and rest color.
+
+## Pomodoro mode
+
+Off by default; toggle it from the widget's right-click menu. While it's on,
+setting a task starts a pomodoro: the bar shows a countdown and session
+counter (`🍅x3 12:34`) on the left, next to the usual elapsed timer on the
+right.
+
+![Context menu](screenshots/context-menu.png)
+
+**Nothing advances without your say-so.** When a pomodoro ends, the bar
+flashes and a notification asks what's next — keep working or take a break:
+
+![Pomodoro finished notification](screenshots/notification.png)
+
+During rest the bar turns gray (color configurable) and counts the break
+down:
+
+![Pomodoro rest](screenshots/bar-rest.png)
+
+When the rest is over, another notification lets you snooze it a minute,
+start the next pomodoro, or switch to a new task:
+
+![Rest over notification](screenshots/notification-rest.png)
+
+Run over the clock and the bar shows the overtime (`🍅x3 25+2:34`).
+Changing the task resets the counter and starts fresh; *Rest now* and
+*Restart pomodoro* in the right-click menu cover the two common shortcuts.
 
 ## Requirements
 
@@ -72,11 +92,10 @@ Setting the same text again keeps the timer running; changing the text resets it
 
 ![Task entry popup](screenshots/popup.png)
 
-![Context menu](screenshots/context-menu.png)
+## Settings
 
-![Pomodoro finished notification](screenshots/notification.png)
-
-![Rest over notification](screenshots/notification-rest.png)
+Settings are split into General, Blink reminder, and Pomodoro pages, with a
+*Reset all settings* button on the General page.
 
 ![General settings](screenshots/settings.png)
 
@@ -93,7 +112,9 @@ Widget code is plain QML — no build step:
 ```
 contents/
 ├── ui/main.qml            # bar (compact) + popup editor (full representation)
-├── ui/configGeneral.qml   # settings page
+├── ui/configGeneral.qml   # settings: General page
+├── ui/configBlink.qml     # settings: Blink reminder page
+├── ui/configPomodoro.qml  # settings: Pomodoro page
 ├── config/main.xml        # config schema
 └── locale/                # compiled translations (.mo)
 po/                        # translation sources (.po)
