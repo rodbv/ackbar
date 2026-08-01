@@ -16,6 +16,37 @@ KCM.SimpleKCM {
     property string cfg_timerFontFamily
     property string cfg_fontFamily
 
+    // No controls here — declared so "Reset all settings" can restore the
+    // Blink reminder and Pomodoro pages' keys too. Defaults must match
+    // config/main.xml.
+    property bool cfg_blinkEnabled
+    property int cfg_blinkIntervalMinutes
+    property color cfg_blinkColor
+    property bool cfg_pomodoroEnabled
+    property int cfg_pomodoroMinutes
+    property int cfg_restMinutes
+    property color cfg_restColor
+
+    function resetAllSettings() {
+        placeholderField.text = "";
+        colorButton.color = defaultBarColor;
+        opacitySlider.value = 0.6;
+        fontCombo.currentIndex = 0;
+        cfg_fontFamily = "";
+        themeFontColorCheck.checked = true;
+        syncFontColor();
+        showTimerCheck.checked = true;
+        timerFontCombo.currentIndex = 0;
+        cfg_timerFontFamily = "";
+        cfg_blinkEnabled = false;
+        cfg_blinkIntervalMinutes = 3;
+        cfg_blinkColor = "#32CD32";
+        cfg_pomodoroEnabled = false;
+        cfg_pomodoroMinutes = 20;
+        cfg_restMinutes = 5;
+        cfg_restColor = "#95a5a6";
+    }
+
     function syncFontColor() {
         cfg_fontColor = themeFontColorCheck.checked
             ? Qt.rgba(0, 0, 0, 0)
@@ -122,5 +153,12 @@ KCM.SimpleKCM {
             }
         }
 
+        Item { Kirigami.FormData.isSection: true; implicitHeight: Kirigami.Units.largeSpacing }
+
+        QQC2.Button {
+            text: i18n("Reset all settings")
+            icon.name: "edit-undo"
+            onClicked: resetAllSettings()
+        }
     }
 }
