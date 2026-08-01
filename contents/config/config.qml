@@ -7,4 +7,9 @@ ConfigModel {
         icon: "configure"
         source: "configGeneral.qml"
     }
+    ConfigCategory {
+        name: i18n("Pomodoro")
+        icon: "chronometer"
+        source: "configPomodoro.qml"
+    }
 }
