@@ -68,6 +68,10 @@ Setting the same text again keeps the timer running; changing the text resets it
 
 ![Context menu with pomodoro actions](screenshots/context-menu.png)
 
+![Pomodoro finished notification](screenshots/notification.png)
+
+![Rest over notification](screenshots/notification-rest.png)
+
 ![Settings dialog](screenshots/settings.png)
 
 ## Development
