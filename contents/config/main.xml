@@ -32,5 +32,11 @@
         <entry name="taskStartedAt" type="String">
             <default></default>
         </entry>
+        <entry name="blinkIntervalMinutes" type="Int">
+            <default>0</default>
+        </entry>
+        <entry name="blinkColor" type="Color">
+            <default>#32CD32</default>
+        </entry>
     </group>
 </kcfg>

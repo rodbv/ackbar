@@ -6,13 +6,16 @@ import org.kde.kcmutils as KCM
 import org.kde.kquickcontrols as KQuickControls
 
 KCM.SimpleKCM {
-    // Keep in sync with the barColor default in config/main.xml
+    // Keep in sync with the barColor/blinkColor defaults in config/main.xml
     readonly property color defaultBarColor: "#2ecc71"
+    readonly property color defaultBlinkColor: "#32CD32"
     property alias cfg_placeholderText: placeholderField.text
     property alias cfg_barColor: colorButton.color
     property alias cfg_barOpacity: opacitySlider.value
     property alias cfg_fontColor: fontColorButton.color
     property alias cfg_showTimer: showTimerCheck.checked
+    property alias cfg_blinkIntervalMinutes: blinkIntervalSpin.value
+    property alias cfg_blinkColor: blinkColorButton.color
     property string cfg_timerFontFamily
     property string cfg_fontFamily
 
@@ -90,6 +93,37 @@ KCM.SimpleKCM {
             id: showTimerCheck
             Kirigami.FormData.label: i18n("Timer:")
             text: i18n("Show timer on task")
+        }
+
+        RowLayout {
+            Kirigami.FormData.label: i18n("Blink reminder:")
+
+            QQC2.SpinBox {
+                id: blinkIntervalSpin
+                from: 0
+                to: 120
+                stepSize: 1
+                textFromValue: (value, locale) => value === 0
+                    ? i18n("Off")
+                    : i18np("every %1 minute", "every %1 minutes", value)
+                valueFromText: (text, locale) => parseInt(text) || 0
+            }
+        }
+
+        RowLayout {
+            Kirigami.FormData.label: i18n("Blink color:")
+
+            KQuickControls.ColorButton {
+                id: blinkColorButton
+                enabled: blinkIntervalSpin.value > 0
+            }
+
+            QQC2.Button {
+                text: i18n("Reset to default")
+                enabled: blinkIntervalSpin.value > 0
+                    && !Qt.colorEqual(blinkColorButton.color, defaultBlinkColor)
+                onClicked: blinkColorButton.color = defaultBlinkColor
+            }
         }
 
         QQC2.ComboBox {

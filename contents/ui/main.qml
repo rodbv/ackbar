@@ -51,6 +51,17 @@ PlasmoidItem {
         onTriggered: root.updateElapsed()
     }
 
+    readonly property color flashColor: plasmoid.configuration.blinkColor
+    readonly property int flashIntervalMs: plasmoid.configuration.blinkIntervalMinutes * 60 * 1000
+    signal flashRequested()
+
+    Timer {
+        running: root.hasTask && root.flashIntervalMs > 0
+        interval: Math.max(1000, root.flashIntervalMs)
+        repeat: true
+        onTriggered: root.flashRequested()
+    }
+
     preferredRepresentation: compactRepresentation
 
     compactRepresentation: Item {
@@ -69,6 +80,40 @@ PlasmoidItem {
 
             Behavior on opacity {
                 NumberAnimation { duration: Kirigami.Units.longDuration }
+            }
+        }
+
+        Rectangle {
+            id: flashOverlay
+            anchors.fill: bar
+            radius: bar.radius
+            color: root.flashColor
+            opacity: 0
+
+            Connections {
+                target: root
+                function onFlashRequested() {
+                    flashAnimation.restart();
+                }
+            }
+
+            SequentialAnimation {
+                id: flashAnimation
+                loops: 3
+                NumberAnimation {
+                    target: flashOverlay
+                    property: "opacity"
+                    to: 1.0
+                    duration: 60
+                }
+                PauseAnimation { duration: 180 }
+                NumberAnimation {
+                    target: flashOverlay
+                    property: "opacity"
+                    to: 0
+                    duration: 80
+                }
+                PauseAnimation { duration: 160 }
             }
         }
 
