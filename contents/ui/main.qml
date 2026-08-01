@@ -10,6 +10,16 @@ PlasmoidItem {
 
     Plasmoid.backgroundHints: PlasmaCore.Types.ShadowBackground | PlasmaCore.Types.ConfigurableBackground
 
+    Plasmoid.contextualActions: [
+        PlasmaCore.Action {
+            text: i18n("Pomodoro mode")
+            icon.name: "chronometer"
+            checkable: true
+            checked: plasmoid.configuration.pomodoroEnabled
+            onTriggered: plasmoid.configuration.pomodoroEnabled = checked
+        }
+    ]
+
     readonly property string taskText: plasmoid.configuration.taskText
     readonly property bool hasTask: taskText.length > 0
     readonly property string fontFamily: plasmoid.configuration.fontFamily || Kirigami.Theme.defaultFont.family
