@@ -8,6 +8,11 @@ ConfigModel {
         source: "configGeneral.qml"
     }
     ConfigCategory {
+        name: i18n("Blink reminder")
+        icon: "notifications"
+        source: "configBlink.qml"
+    }
+    ConfigCategory {
         name: i18n("Pomodoro")
         icon: "chronometer"
         source: "configPomodoro.qml"

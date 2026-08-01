@@ -250,7 +250,9 @@ PlasmoidItem {
     }
 
     readonly property color flashColor: plasmoid.configuration.blinkColor
-    readonly property int flashIntervalMs: plasmoid.configuration.blinkIntervalMinutes * 60 * 1000
+    readonly property int flashIntervalMs: plasmoid.configuration.blinkEnabled
+        ? plasmoid.configuration.blinkIntervalMinutes * 60 * 1000
+        : 0
     signal flashRequested()
 
     Timer {
@@ -282,10 +284,8 @@ PlasmoidItem {
             anchors.topMargin: 2
             anchors.bottomMargin: 2
             radius: height / 2
-            // Concrete gray during rest — same flat palette family as the
-            // default #2ecc71 bar green.
             color: root.pomodoroActive && root.pomodoroPhase.startsWith("rest")
-                ? "#95a5a6"
+                ? plasmoid.configuration.restColor
                 : plasmoid.configuration.barColor
             opacity: root.hasTask ? plasmoid.configuration.barOpacity : 0.05
 

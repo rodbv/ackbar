@@ -3,11 +3,15 @@ import QtQuick.Controls as QQC2
 import QtQuick.Layouts
 import org.kde.kirigami as Kirigami
 import org.kde.kcmutils as KCM
+import org.kde.kquickcontrols as KQuickControls
 
 KCM.SimpleKCM {
+    // Keep in sync with the restColor default in config/main.xml
+    readonly property color defaultRestColor: "#95a5a6"
     property alias cfg_pomodoroEnabled: enabledCheck.checked
     property alias cfg_pomodoroMinutes: workSpin.value
     property alias cfg_restMinutes: restSpin.value
+    property alias cfg_restColor: restColorButton.color
 
     Kirigami.FormLayout {
         QQC2.CheckBox {
@@ -37,6 +41,22 @@ KCM.SimpleKCM {
             stepSize: 1
             textFromValue: (value, locale) => i18np("%1 minute", "%1 minutes", value)
             valueFromText: (text, locale) => parseInt(text) || 5
+        }
+
+        RowLayout {
+            Kirigami.FormData.label: i18n("Rest bar color:")
+
+            KQuickControls.ColorButton {
+                id: restColorButton
+                enabled: enabledCheck.checked
+            }
+
+            QQC2.Button {
+                text: i18n("Reset to default")
+                enabled: enabledCheck.checked
+                    && !Qt.colorEqual(restColorButton.color, defaultRestColor)
+                onClicked: restColorButton.color = defaultRestColor
+            }
         }
 
         QQC2.Label {

@@ -108,7 +108,7 @@ Left side of the bar, using the existing timer font
 | `restEnded` | `☕ 5+1:05` | counts up (nominal minutes + overtime) |
 
 - `🍅x` + count = current session number; `☕` marks rest.
-- During rest phases the bar itself turns concrete gray (`#95a5a6`),
+- During rest phases the bar itself turns concrete gray (`restColor`, default `#95a5a6`),
   fading back to the configured color on work.
 - One shared 1s `Timer` drives both this and the existing elapsed label.
 - The task label's right/left margins account for the new label so text

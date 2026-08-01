@@ -61,11 +61,20 @@ msgstr "Monospace padrão"
 msgid "Default text:"
 msgstr "Texto padrão:"
 
-msgid "Blink reminder:"
-msgstr "Lembrete visual:"
+msgid "Blink reminder"
+msgstr "Lembrete visual"
 
-msgid "Blink color:"
-msgstr "Cor do lembrete:"
+msgid "Enable blink reminder"
+msgstr "Ativar lembrete visual"
+
+msgid "Interval:"
+msgstr "Intervalo:"
+
+msgid "Color:"
+msgstr "Cor:"
+
+msgid "Rest bar color:"
+msgstr "Cor da barra no descanso:"
 
 msgid "The bar blinks in the selected color at the selected interval, while a task is set."
 msgstr "A barra pisca na cor e frequência selecionadas, enquanto houver uma tarefa definida."
@@ -125,9 +134,6 @@ msgstr "Sim, mesma tarefa"
 
 msgid "New task…"
 msgstr "Nova tarefa…"
-
-msgid "Off"
-msgstr "Desligado"
 
 msgid "every %1 minute"
 msgid_plural "every %1 minutes"

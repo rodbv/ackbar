@@ -6,16 +6,13 @@ import org.kde.kcmutils as KCM
 import org.kde.kquickcontrols as KQuickControls
 
 KCM.SimpleKCM {
-    // Keep in sync with the barColor/blinkColor defaults in config/main.xml
+    // Keep in sync with the barColor default in config/main.xml
     readonly property color defaultBarColor: "#2ecc71"
-    readonly property color defaultBlinkColor: "#32CD32"
     property alias cfg_placeholderText: placeholderField.text
     property alias cfg_barColor: colorButton.color
     property alias cfg_barOpacity: opacitySlider.value
     property color cfg_fontColor
     property alias cfg_showTimer: showTimerCheck.checked
-    property alias cfg_blinkIntervalMinutes: blinkIntervalSpin.value
-    property alias cfg_blinkColor: blinkColorButton.color
     property string cfg_timerFontFamily
     property string cfg_fontFamily
 
@@ -125,42 +122,5 @@ KCM.SimpleKCM {
             }
         }
 
-        Item { Kirigami.FormData.isSection: true; implicitHeight: Kirigami.Units.largeSpacing }
-
-        QQC2.SpinBox {
-            id: blinkIntervalSpin
-            Kirigami.FormData.label: i18n("Blink reminder:")
-            from: 0
-            to: 120
-            stepSize: 1
-            textFromValue: (value, locale) => value === 0
-                ? i18n("Off")
-                : i18np("every %1 minute", "every %1 minutes", value)
-            valueFromText: (text, locale) => parseInt(text) || 0
-        }
-
-        RowLayout {
-            Kirigami.FormData.label: i18n("Blink color:")
-
-            KQuickControls.ColorButton {
-                id: blinkColorButton
-                enabled: blinkIntervalSpin.value > 0
-            }
-
-            QQC2.Button {
-                text: i18n("Reset to default")
-                enabled: blinkIntervalSpin.value > 0
-                    && !Qt.colorEqual(blinkColorButton.color, defaultBlinkColor)
-                onClicked: blinkColorButton.color = defaultBlinkColor
-            }
-        }
-
-        QQC2.Label {
-            text: i18n("The bar blinks in the selected color at the selected interval, while a task is set.")
-            font: Kirigami.Theme.smallFont
-            opacity: 0.7
-            wrapMode: Text.WordWrap
-            Layout.fillWidth: true
-        }
     }
 }
