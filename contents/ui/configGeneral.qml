@@ -35,11 +35,6 @@ KCM.SimpleKCM {
     }
 
     Kirigami.FormLayout {
-        Kirigami.Separator {
-            Kirigami.FormData.isSection: true
-            Kirigami.FormData.label: i18n("Text")
-        }
-
         RowLayout {
             Kirigami.FormData.label: i18n("Default text:")
 
@@ -87,10 +82,7 @@ KCM.SimpleKCM {
             }
         }
 
-        Kirigami.Separator {
-            Kirigami.FormData.isSection: true
-            Kirigami.FormData.label: i18n("Bar")
-        }
+        Item { Kirigami.FormData.isSection: true }
 
         RowLayout {
             Kirigami.FormData.label: i18n("Bar color:")
@@ -114,10 +106,7 @@ KCM.SimpleKCM {
             stepSize: 0.05
         }
 
-        Kirigami.Separator {
-            Kirigami.FormData.isSection: true
-            Kirigami.FormData.label: i18n("Timer")
-        }
+        Item { Kirigami.FormData.isSection: true }
 
         QQC2.CheckBox {
             id: showTimerCheck
@@ -136,14 +125,11 @@ KCM.SimpleKCM {
             }
         }
 
-        Kirigami.Separator {
-            Kirigami.FormData.isSection: true
-            Kirigami.FormData.label: i18n("Blink reminder")
-        }
+        Item { Kirigami.FormData.isSection: true }
 
         QQC2.SpinBox {
             id: blinkIntervalSpin
-            Kirigami.FormData.label: i18n("Interval:")
+            Kirigami.FormData.label: i18n("Blink reminder:")
             from: 0
             to: 120
             stepSize: 1
@@ -154,7 +140,7 @@ KCM.SimpleKCM {
         }
 
         RowLayout {
-            Kirigami.FormData.label: i18n("Color:")
+            Kirigami.FormData.label: i18n("Blink color:")
 
             KQuickControls.ColorButton {
                 id: blinkColorButton
