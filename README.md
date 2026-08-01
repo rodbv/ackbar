@@ -74,6 +74,8 @@ Setting the same text again keeps the timer running; changing the text resets it
 
 ![Settings dialog](screenshots/settings.png)
 
+![Pomodoro settings page](screenshots/settings-pomodoro.png)
+
 ## Development
 
 ```sh
