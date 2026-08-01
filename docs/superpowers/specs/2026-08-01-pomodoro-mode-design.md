@@ -71,7 +71,9 @@ work ──countdown reaches 0──▶ workEnded            (notification A)
 workEnded ──[Keep working]──▶ work(count+1)
 workEnded ──[Take break]────▶ rest
 rest ──countdown reaches 0──▶ restEnded            (notification B)
-restEnded ──[Start pomodoro]▶ work(count+1)
+restEnded ──[Not yet]───────▶ rest (+1 min, notification B re-fires at 0)
+restEnded ──[Yes, same task]▶ work(count+1)
+restEnded ──[reply: new task]▶ task change → work(count=1)
 any ──task changed──▶ work(count=1)                (fresh start)
 any ──task cleared──▶ (idle)
 any ──mode disabled──▶ (idle, state cleared)
@@ -79,8 +81,14 @@ any ──mode disabled──▶ (idle, state cleared)
 
 - Notification A: "Pomodoro #N finished. Time for a break?" with actions
   **Keep working** and **Take break**.
-- Notification B: "Rest over — ready for the next one?" with action
-  **Start pomodoro**.
+- Notification B: "Rest over — start the next pomodoro?" with actions
+  **Not yet** (extends rest by 1 minute, then notifies again),
+  **Yes, same task**, and an inline-reply action **New task…**
+  (`NotificationReplyAction`) whose submitted text replaces the task —
+  triggering the normal task-change reset (count back to 1, timer reset).
+- If the inline reply proves crowded or janky in practice, fallback:
+  "New task…" becomes a plain action that opens the bar's edit popup
+  (`root.expanded = true`).
 - Enabling the mode while a task is already set starts `work` with
   count = 1 immediately.
 
@@ -117,9 +125,9 @@ Left side of the bar, using the existing timer font
   `phaseStartedAt`; already-elapsed phases restore as `*Ended` (overtime
   counting from the phase's nominal end), without re-firing notifications.
 - Notification dismissed without clicking a button: state stays in
-  `*Ended`, overtime keeps counting; the user can recover via a repeat
-  notification only when the next transition is triggered — v1 offers no
-  re-notify. The bar's overtime display is the persistent cue.
+  `*Ended`, overtime keeps counting; the bar's overtime display is the
+  persistent cue. No re-notify, except the explicit [Not yet] snooze,
+  which re-fires notification B once per press.
 - Duration changed mid-phase: applies from the next phase; the running
   countdown keeps its original target (computed at phase start).
 
@@ -133,7 +141,9 @@ Manual test matrix (no test harness exists for this plasmoid):
 4. [Keep working] → `🍅2` fresh countdown, no rest.
 5. [Take break] → `☕` rest countdown.
 6. Let rest end → notification B, overtime.
-7. [Start pomodoro] → `🍅` count+1.
+7. [Yes, same task] → `🍅` count+1.
+7a. [Not yet] → `☕ 1:00` countdown, notification B again at zero.
+7b. Inline reply with new text → task replaced, `🍅1` fresh countdown.
 8. Change task mid-work → count back to 1, fresh countdown.
 9. Clear task → left label disappears.
 10. Restart plasmashell mid-work → countdown resumes correctly.
