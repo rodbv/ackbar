@@ -11,9 +11,6 @@
         <entry name="barColor" type="Color">
             <default>#2ecc71</default>
         </entry>
-        <entry name="barOpacity" type="Double">
-            <default>0.6</default>
-        </entry>
         <entry name="fontFamily" type="String">
             <default></default>
         </entry>

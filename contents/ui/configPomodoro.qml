@@ -77,6 +77,11 @@ KCM.SimpleKCM {
                     && !Qt.colorEqual(restColorButton.color, defaultRestColor)
                 onClicked: restColorButton.color = defaultRestColor
             }
+
+            ColorSwatches {
+                enabled: enabledCheck.checked
+                onPicked: c => restColorButton.color = c
+            }
         }
 
         QQC2.Label {

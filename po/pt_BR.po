@@ -25,9 +25,6 @@ msgstr "Cor da barra:"
 msgid "Reset to default"
 msgstr "Restaurar padrão"
 
-msgid "Bar tint strength:"
-msgstr "Intensidade da cor da barra:"
-
 msgid "Font:"
 msgstr "Fonte:"
 

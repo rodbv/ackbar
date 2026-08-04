@@ -299,7 +299,9 @@ PlasmoidItem {
             color: root.pomodoroActive && root.pomodoroPhase.startsWith("rest")
                 ? plasmoid.configuration.restColor
                 : plasmoid.configuration.barColor
-            opacity: root.hasTask ? plasmoid.configuration.barOpacity : 0.05
+            // Full opacity with a task: the bar shows exactly the picked
+            // color. Translucency only for the idle nudge.
+            opacity: root.hasTask ? 1.0 : 0.05
 
             Behavior on opacity {
                 NumberAnimation { duration: Kirigami.Units.longDuration }

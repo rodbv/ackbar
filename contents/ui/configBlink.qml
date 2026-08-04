@@ -45,6 +45,11 @@ KCM.SimpleKCM {
                     && !Qt.colorEqual(blinkColorButton.color, defaultBlinkColor)
                 onClicked: blinkColorButton.color = defaultBlinkColor
             }
+
+            ColorSwatches {
+                enabled: enabledCheck.checked
+                onPicked: c => blinkColorButton.color = c
+            }
         }
 
         QQC2.Label {

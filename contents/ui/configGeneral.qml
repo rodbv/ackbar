@@ -10,7 +10,6 @@ KCM.SimpleKCM {
     readonly property color defaultBarColor: "#2ecc71"
     property alias cfg_placeholderText: placeholderField.text
     property alias cfg_barColor: colorButton.color
-    property alias cfg_barOpacity: opacitySlider.value
     property color cfg_fontColor
     property alias cfg_showTimer: showTimerCheck.checked
     property string cfg_timerFontFamily
@@ -30,7 +29,6 @@ KCM.SimpleKCM {
     function resetAllSettings() {
         placeholderField.text = "";
         colorButton.color = defaultBarColor;
-        opacitySlider.value = 0.6;
         fontCombo.currentIndex = 0;
         cfg_fontFamily = "";
         themeFontColorCheck.checked = true;
@@ -108,6 +106,11 @@ KCM.SimpleKCM {
                 showAlphaChannel: false
                 onColorChanged: syncFontColor()
             }
+
+            ColorSwatches {
+                enabled: !themeFontColorCheck.checked
+                onPicked: c => fontColorButton.color = c
+            }
         }
 
         Item { Kirigami.FormData.isSection: true; implicitHeight: Kirigami.Units.largeSpacing }
@@ -124,14 +127,10 @@ KCM.SimpleKCM {
                 enabled: !Qt.colorEqual(colorButton.color, defaultBarColor)
                 onClicked: colorButton.color = defaultBarColor
             }
-        }
 
-        QQC2.Slider {
-            id: opacitySlider
-            Kirigami.FormData.label: i18n("Bar tint strength:")
-            from: 0.2
-            to: 1.0
-            stepSize: 0.05
+            ColorSwatches {
+                onPicked: c => colorButton.color = c
+            }
         }
 
         Item { Kirigami.FormData.isSection: true; implicitHeight: Kirigami.Units.largeSpacing }
