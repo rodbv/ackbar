@@ -428,7 +428,9 @@ PlasmoidItem {
 
         PlasmaComponents3.Label {
             visible: root.vertical
-            rotation: -90
+            // Left edge reads bottom-to-top, right edge top-to-bottom —
+            // matches how you tilt your head toward the panel.
+            rotation: Plasmoid.location === PlasmaCore.Types.RightEdge ? 90 : -90
             anchors.centerIn: bar
             // Rotation is visual only: the layout box stays unrotated, so
             // width here is the *vertical* space the text may occupy.
