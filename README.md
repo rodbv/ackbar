@@ -19,6 +19,7 @@ A minimal KDE Plasma 6 panel widget that shows the **one thing you are doing rig
 
   ![Blink reminder](screenshots/003-blink.gif)
 - **Pomodoro mode** — opt-in, see below.
+- **Vertical panels** — the task rotates to read along the panel; pomodoro and timer stack flat.
 - **Configurable** — bar color, tint strength, fonts, font color, timer on/off, blink interval and color, pomodoro durations and rest color.
 
 ## Pomodoro mode

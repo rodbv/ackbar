@@ -275,17 +275,27 @@ PlasmoidItem {
 
     preferredRepresentation: compactRepresentation
 
+    // Vertical panels: pomodoro stacks on top, elapsed timer sits at the
+    // bottom (both horizontal — they fit the panel width); only the task
+    // text rotates (-90°, reads bottom-to-top).
+    readonly property bool vertical: Plasmoid.formFactor === PlasmaCore.Types.Vertical
+
     compactRepresentation: Item {
-        Layout.minimumWidth: Kirigami.Units.gridUnit * 10
-        Layout.preferredWidth: Kirigami.Units.gridUnit * 22
-        Layout.fillWidth: true
+        Layout.minimumWidth: root.vertical ? 0 : Kirigami.Units.gridUnit * 10
+        Layout.preferredWidth: root.vertical ? -1 : Kirigami.Units.gridUnit * 22
+        Layout.fillWidth: !root.vertical
+        Layout.minimumHeight: root.vertical ? Kirigami.Units.gridUnit * 10 : 0
+        Layout.preferredHeight: root.vertical ? Kirigami.Units.gridUnit * 22 : -1
+        Layout.fillHeight: root.vertical
 
         Rectangle {
             id: bar
             anchors.fill: parent
-            anchors.topMargin: 2
-            anchors.bottomMargin: 2
-            radius: height / 2
+            anchors.topMargin: root.vertical ? 0 : 2
+            anchors.bottomMargin: root.vertical ? 0 : 2
+            anchors.leftMargin: root.vertical ? 2 : 0
+            anchors.rightMargin: root.vertical ? 2 : 0
+            radius: Math.min(width, height) / 2
             color: root.pomodoroActive && root.pomodoroPhase.startsWith("rest")
                 ? plasmoid.configuration.restColor
                 : plasmoid.configuration.barColor
@@ -334,7 +344,14 @@ PlasmoidItem {
             }
         }
 
+        readonly property string displayText: root.hasTask
+            ? root.taskText
+            : (plasmoid.configuration.placeholderText || i18n("What are you doing now?"))
+
+        // --- Horizontal layout ---
+
         PlasmaComponents3.Label {
+            visible: !root.vertical
             anchors.fill: bar
             anchors.leftMargin: root.pomodoroActive
                 ? pomodoroLabel.width + Kirigami.Units.largeSpacing * 2
@@ -345,9 +362,7 @@ PlasmoidItem {
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
             elide: Text.ElideRight
-            text: root.hasTask
-                ? root.taskText
-                : (plasmoid.configuration.placeholderText || i18n("What are you doing now?"))
+            text: parent.displayText
             opacity: root.hasTask ? 1.0 : 0.6
             font.bold: root.hasTask
             font.family: root.fontFamily
@@ -357,7 +372,7 @@ PlasmoidItem {
 
         PlasmaComponents3.Label {
             id: pomodoroLabel
-            visible: root.pomodoroActive
+            visible: root.pomodoroActive && !root.vertical
             anchors.left: bar.left
             anchors.leftMargin: Kirigami.Units.largeSpacing
             anchors.verticalCenter: bar.verticalCenter
@@ -370,7 +385,7 @@ PlasmoidItem {
 
         PlasmaComponents3.Label {
             id: timerLabel
-            visible: root.showTimer
+            visible: root.showTimer && !root.vertical
             anchors.right: bar.right
             anchors.rightMargin: Kirigami.Units.largeSpacing
             anchors.verticalCenter: bar.verticalCenter
@@ -378,6 +393,67 @@ PlasmoidItem {
             opacity: 0.75
             font.family: plasmoid.configuration.timerFontFamily || "monospace"
             font.pixelSize: Math.max(7, bar.height * 0.36)
+            color: root.textColor
+        }
+
+        // --- Vertical layout ---
+
+        PlasmaComponents3.Label {
+            id: pomodoroLabelV
+            visible: root.pomodoroActive && root.vertical
+            anchors.top: bar.top
+            anchors.topMargin: Kirigami.Units.largeSpacing
+            anchors.horizontalCenter: bar.horizontalCenter
+            // "🍅x2 14:33" stacks as two lines in the panel's width
+            text: root.pomodoroText.replace(" ", "\n")
+            horizontalAlignment: Text.AlignHCenter
+            opacity: 0.9
+            font.family: plasmoid.configuration.timerFontFamily || "monospace"
+            font.pixelSize: Math.max(7, bar.width * 0.28)
+            color: root.textColor
+        }
+
+        PlasmaComponents3.Label {
+            id: timerLabelV
+            visible: root.showTimer && root.vertical
+            anchors.bottom: bar.bottom
+            anchors.bottomMargin: Kirigami.Units.largeSpacing
+            anchors.horizontalCenter: bar.horizontalCenter
+            text: root.elapsedText
+            opacity: 0.75
+            font.family: plasmoid.configuration.timerFontFamily || "monospace"
+            font.pixelSize: Math.max(7, bar.width * 0.28)
+            color: root.textColor
+        }
+
+        PlasmaComponents3.Label {
+            visible: root.vertical
+            rotation: -90
+            anchors.centerIn: bar
+            // Rotation is visual only: the layout box stays unrotated, so
+            // width here is the *vertical* space the text may occupy.
+            anchors.verticalCenterOffset: {
+                const top = root.pomodoroActive
+                    ? pomodoroLabelV.height + Kirigami.Units.largeSpacing : 0;
+                const bottom = root.showTimer
+                    ? timerLabelV.height + Kirigami.Units.largeSpacing : 0;
+                return (top - bottom) / 2;
+            }
+            width: {
+                const top = root.pomodoroActive
+                    ? pomodoroLabelV.height + Kirigami.Units.largeSpacing : 0;
+                const bottom = root.showTimer
+                    ? timerLabelV.height + Kirigami.Units.largeSpacing : 0;
+                return bar.height - top - bottom - Kirigami.Units.largeSpacing * 2;
+            }
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            elide: Text.ElideRight
+            text: parent.displayText
+            opacity: root.hasTask ? 1.0 : 0.6
+            font.bold: root.hasTask
+            font.family: root.fontFamily
+            font.pixelSize: Math.max(8, bar.width * 0.54)
             color: root.textColor
         }
 
